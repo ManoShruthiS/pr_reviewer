@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Review & Risk Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>AI-Powered Intelligent Code Review and Risk Analysis</h1>
+        <p>for GitHub Pull Requests</p>
+    </header>
+
+    <main>
+        <div class="input-section">
+            <input type="text" id="prUrl" placeholder="Paste GitHub Pull Request URL...">
+            <button id="reviewBtn" onclick="runReview()">Review</button>
+        </div>
+
+        <div id="results" class="hidden">
+            <div class="risk-section">
+                <h2>Risk Score</h2>
+                <div class="risk-score" id="riskScore">0</div>
+                <div class="risk-level" id="riskLevel"></div>
+            </div>
+
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h3>Issues by Type</h3>
+                    <canvas id="typeChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Issues by Severity</h3>
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="issues-section">
+                <h2>Detected Issues</h2>
+                <div id="issuesList"></div>
+            </div>
+        </div>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Analyzing Pull Request...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Batch-13 | Avinashilingam Institute for Home Science & Higher Education for Women</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
