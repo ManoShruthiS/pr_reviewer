@@ -1,58 +1,531 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Code Review & Risk Analysis</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0f1d" />
+  <meta name="description" content="AI-Powered Intelligent Code Review and Risk Analysis System for GitHub Pull Requests." />
+  <title>PRiVIEW — AI Code Review & Risk Analysis</title>
+
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js" defer></script>
 </head>
-<body>
-    <header>
-        <h1>AI-Powered Intelligent Code Review and Risk Analysis</h1>
-        <p>for GitHub Pull Requests</p>
-    </header>
+<body class="dark-theme">
+  <!-- Glowing Background Ambient Effects -->
+  <div class="ambient-glow glow-burgundy"></div>
+  <div class="ambient-glow glow-darkblue"></div>
 
-    <main>
-        <div class="input-section">
-            <input type="text" id="prUrl" placeholder="Paste GitHub Pull Request URL...">
-            <button id="reviewBtn" onclick="runReview()">Review</button>
+  <div class="app-layout">
+    <!-- Sleek Sidebar Navigation -->
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="sidebar-header">
+        <a class="brand-logo" href="#top" aria-label="PRiVIEW Home">
+          <div class="logo-gem">
+            <span class="logo-symbol">⬡</span>
+            <span class="logo-inner-sparkle">✦</span>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">PRiVIEW <span class="badge-version">v2.0</span></div>
+            <div class="brand-subtitle">AI Code Reviewer</div>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-menu">
+        <div class="nav-section-title">MAIN NAVIGATION</div>
+        <a class="nav-link active" href="#top">
+          <span class="nav-icon">◈</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-link" href="#analyzerSection">
+          <span class="nav-icon">⟁</span>
+          <span class="nav-label">Analyze PR</span>
+        </a>
+        <a class="nav-link" href="#results">
+          <span class="nav-icon">⌬</span>
+          <span class="nav-label">Risk Overview</span>
+        </a>
+        <a class="nav-link" href="#coverageSection">
+          <span class="nav-icon">⛊</span>
+          <span class="nav-label">Coverage &amp; Scope</span>
+        </a>
+        <a class="nav-link" href="#charts">
+          <span class="nav-icon">☵</span>
+          <span class="nav-label">Visual Analytics</span>
+        </a>
+        <a class="nav-link" href="#detectedIssues">
+          <span class="nav-icon">⚑</span>
+          <span class="nav-label">Issues & Fixes</span>
+        </a>
+        <a class="nav-link" href="#historySection">
+          <span class="nav-icon">◷</span>
+          <span class="nav-label">Audit History</span>
+        </a>
+      </nav>
+
+      <!-- Academic & Batch Info Card -->
+      <div class="academic-card">
+        <div class="card-badge-row">
+          <span class="academic-tag">BATCH-13</span>
+          <span class="dept-tag">CSE</span>
+        </div>
+        <div class="project-institution">Avinashilingam Institute</div>
+        <div class="project-dept">Dept of Computer Science &amp; Engg</div>
+        <div class="team-avatars-row" title="Mano Shruthi, Pratigsaa, Safrina, Srivarshini">
+          <span class="team-avatar" title="Mano Shruthi S">M</span>
+          <span class="team-avatar" title="Pratigsaa S">P</span>
+          <span class="team-avatar" title="Safrina S">S</span>
+          <span class="team-avatar" title="Srivarshini V">V</span>
+          <span class="team-count">+4</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="top" class="main-viewport">
+      <!-- Topbar Header -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="breadcrumbs">
+            <span class="crumb-icon">⚡</span>
+            <span class="crumb-parent">Final Year Project</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-current">AI-Powered Intelligent Code Review</span>
+          </div>
         </div>
 
-        <div id="results" class="hidden">
-            <div class="risk-section">
-                <h2>Risk Score</h2>
-                <div class="risk-score" id="riskScore">0</div>
-                <div class="risk-level" id="riskLevel"></div>
+        <div class="topbar-right">
+          <!-- Backend System Status Indicator -->
+          <div class="system-status-pill">
+            <span class="pulse-indicator" id="liveStatusDot"></span>
+            <span class="status-text" id="dataSourceBadge">System Online</span>
+          </div>
+
+          <button id="exportReportBtn" type="button" class="btn-action-outline" title="Print or save PDF report">
+            <span class="btn-icon">⎙</span> Export Report
+          </button>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- Hero Input & Scanner Section -->
+        <section class="hero-scanner-section" id="analyzerSection">
+          <div class="scanner-header">
+            <div class="badge-eyebrow">
+              <span class="sparkle-icon">✦</span> STATIC SCANNING + AI REASONING ENGINE
+            </div>
+            <h1 class="hero-headline">
+              Intelligent Pull Request <span class="gradient-text">Risk Analyzer</span>
+            </h1>
+            <p class="hero-subtext">
+              Automated multi-tier vulnerability detection, AST code-quality analysis, and LLM-assisted explanations with 1-click code fixes before merge.
+            </p>
+          </div>
+
+          <!-- PR URL Form -->
+          <form class="pr-input-form" id="reviewForm" novalidate>
+            <div class="input-glow-wrapper">
+              <div class="input-prefix-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                </svg>
+              </div>
+              <input 
+                id="prUrl" 
+                type="url" 
+                placeholder="https://github.com/owner/repository/pull/123" 
+                autocomplete="url" 
+                aria-label="GitHub pull request URL" 
+                required 
+              />
+              <button class="btn-primary-review" type="submit">
+                <span class="btn-sparkle">✦</span>
+                <span class="btn-label">Run Analysis</span>
+                <span class="btn-arrow">→</span>
+              </button>
+            </div>
+          </form>
+          <p class="url-error" id="urlError" role="alert" hidden>
+            ⚠️ Please enter a valid GitHub pull request URL (e.g., https://github.com/owner/repo/pull/123).
+          </p>
+        </section>
+
+        <!-- Dynamic Review Pipeline Tracker -->
+        <section class="pipeline-section" aria-label="Review Workflow Stages">
+          <div class="pipeline-grid">
+            <div class="pipeline-step done" data-step="1">
+              <div class="step-badge">1</div>
+              <div class="step-info">
+                <span class="step-name">PR Ingestion</span>
+                <span class="step-desc">PyGithub Diff Parsing</span>
+              </div>
+              <span class="step-state-icon">✓</span>
             </div>
 
-            <div class="charts-section">
-                <div class="chart-container">
-                    <h3>Issues by Type</h3>
-                    <canvas id="typeChart"></canvas>
+            <div class="pipeline-divider"></div>
+
+            <div class="pipeline-step done" data-step="2">
+              <div class="step-badge">2</div>
+              <div class="step-info">
+                <span class="step-name">Static Analysis</span>
+                <span class="step-desc">Bandit &amp; Pyflakes</span>
+              </div>
+              <span class="step-state-icon">✓</span>
+            </div>
+
+            <div class="pipeline-divider"></div>
+
+            <div class="pipeline-step done" data-step="3">
+              <div class="step-badge">3</div>
+              <div class="step-info">
+                <span class="step-name">Quality &amp; AST</span>
+                <span class="step-desc">Complexity &amp; Smells</span>
+              </div>
+              <span class="step-state-icon">✓</span>
+            </div>
+
+            <div class="pipeline-divider"></div>
+
+            <div class="pipeline-step" data-step="4">
+              <div class="step-badge">4</div>
+              <div class="step-info">
+                <span class="step-name">AI Explanations</span>
+                <span class="step-desc">LLM Context Reasoning</span>
+              </div>
+              <span class="step-spinner"></span>
+            </div>
+
+            <div class="pipeline-divider"></div>
+
+            <div class="pipeline-step" data-step="5">
+              <div class="step-badge">5</div>
+              <div class="step-info">
+                <span class="step-name">Risk Assessment</span>
+                <span class="step-desc">Score &amp; DB Persistence</span>
+              </div>
+              <span class="step-empty"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Skeleton Loading State -->
+        <section class="loading-state-card" id="loadingState" aria-live="polite" hidden>
+          <div class="loading-header">
+            <div class="spinner-ring"></div>
+            <div>
+              <strong class="loading-title">Scanning Code Changes with Static Analyzers &amp; AI...</strong>
+              <div class="loading-subtitle">Extracting patches, mapping CWE vulnerabilities, and calculating pull request risk score.</div>
+            </div>
+          </div>
+          <div class="skeleton-bar skeleton-full"></div>
+          <div class="skeleton-grid-2">
+            <div class="skeleton-bar skeleton-card"></div>
+            <div class="skeleton-bar skeleton-card"></div>
+          </div>
+        </section>
+
+        <!-- Analysis Results Dashboard -->
+        <section class="results-dashboard" id="results">
+          <!-- Results Section Header -->
+          <div class="results-banner">
+            <div class="banner-left">
+              <span class="banner-kicker">EXECUTIVE SUMMARY</span>
+              <h2 class="banner-title" id="resultsHeadingTitle">Pull Request Risk Report</h2>
+            </div>
+            <div class="banner-right">
+              <div class="repo-badge">
+                <span class="repo-icon">📂</span>
+                <span id="reviewedRepo" class="repo-path">enterprise/auth-service#14</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="kpi-grid">
+            <!-- Overall Risk Score Gauge -->
+            <article class="kpi-card risk-gauge-card">
+              <div class="kpi-header">
+                <span class="kpi-tag">OVERALL RISK</span>
+                <span class="kpi-info-icon" title="Risk Score calculated on a 0–100 scale from issue severity and category weights">ⓘ</span>
+              </div>
+              <div class="gauge-container" id="riskGauge" data-score="72">
+                <svg class="gauge-svg" viewBox="0 0 240 150">
+                  <path class="gauge-track" d="M 30 128 A 90 90 0 0 1 210 128" />
+                  <path class="gauge-value" id="gaugeArc" d="M 30 128 A 90 90 0 0 1 210 128" />
+                </svg>
+                <div class="gauge-text-overlay">
+                  <div class="gauge-number" id="riskScore">72</div>
+                  <div class="gauge-scale">/ 100</div>
                 </div>
-                <div class="chart-container">
-                    <h3>Issues by Severity</h3>
-                    <canvas id="severityChart"></canvas>
+              </div>
+              <div class="risk-badge-pill high" id="riskLevel">HIGH RISK</div>
+              <p class="risk-verdict-caption" id="riskCaption">Several critical vulnerabilities need resolution before merging.</p>
+            </article>
+
+            <!-- Metric 1: Security -->
+            <article class="kpi-card metric-card card-security">
+              <div class="metric-icon-box security-box">🛡️</div>
+              <div class="metric-data">
+                <span class="metric-label">Security Flaws</span>
+                <div class="metric-value-wrap">
+                  <span class="metric-number" id="securityCount">2</span>
+                  <span class="metric-unit">CVE / CWEs</span>
                 </div>
+              </div>
+              <div class="metric-bar-bg"><div class="metric-bar-fill bar-security"></div></div>
+            </article>
+
+            <!-- Metric 2: Bugs -->
+            <article class="kpi-card metric-card card-bug">
+              <div class="metric-icon-box bug-box">🐞</div>
+              <div class="metric-data">
+                <span class="metric-label">Syntax &amp; Bugs</span>
+                <div class="metric-value-wrap">
+                  <span class="metric-number" id="bugCount">2</span>
+                  <span class="metric-unit">Exceptions</span>
+                </div>
+              </div>
+              <div class="metric-bar-bg"><div class="metric-bar-fill bar-bug"></div></div>
+            </article>
+
+            <!-- Metric 3: Quality -->
+            <article class="kpi-card metric-card card-quality">
+              <div class="metric-icon-box quality-box">⚙️</div>
+              <div class="metric-data">
+                <span class="metric-label">Code Quality</span>
+                <div class="metric-value-wrap">
+                  <span class="metric-number" id="qualityCount">2</span>
+                  <span class="metric-unit">Code Smells</span>
+                </div>
+              </div>
+              <div class="metric-bar-bg"><div class="metric-bar-fill bar-quality"></div></div>
+            </article>
+
+            <!-- AI Executive Summary Panel -->
+            <article class="kpi-card ai-summary-card">
+              <div class="ai-summary-header">
+                <div class="ai-chip">
+                  <span class="ai-sparkle">✦</span> AI SYNTHESIS
+                </div>
+                <span class="ai-model-tag" id="aiModelBadge">GPT-4o-mini &amp; Expert Heuristics</span>
+              </div>
+              <div class="ai-summary-body" id="aiSummary">
+                The pull request contains high-risk security flaws and runtime bugs. The most critical finding is a hardcoded secret in <code>auth_service.py</code>. Apply suggested security remediation before integration.
+              </div>
+              <div class="ai-summary-footer">
+                <span class="verified-dot"></span> Automated Security Decision Support System
+              </div>
+            </article>
+          </div>
+
+          <!-- Analysis Coverage & Transparency Card (FR-12 & FR-04) -->
+          <section class="coverage-section" id="coverageSection">
+            <div class="coverage-card">
+              <div class="coverage-header">
+                <div class="coverage-header-left">
+                  <div class="coverage-tag-row">
+                    <span class="coverage-badge">ANALYSIS SCOPE &amp; TRANSPARENCY</span>
+                    <span class="coverage-rate-pill" id="coverageRatePill">100% Analyzed</span>
+                  </div>
+                  <h3 class="coverage-title">Multi-Language PR Coverage Breakdown</h3>
+                  <p class="coverage-subtext">Explicit accounting of analyzed files, detected programming languages, and engaged security &amp; defect scanners.</p>
+                </div>
+                <div class="coverage-stats-cluster">
+                  <div class="stat-box">
+                    <span class="stat-number" id="coverageAnalyzedCount">5</span>
+                    <span class="stat-label">Files Analyzed</span>
+                  </div>
+                  <div class="stat-box">
+                    <span class="stat-number" id="coverageSkippedCount">0</span>
+                    <span class="stat-label">Files Skipped</span>
+                  </div>
+                  <div class="stat-box">
+                    <span class="stat-number" id="coverageLangCount">2</span>
+                    <span class="stat-label">Languages</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Badges Strip for Languages & Tools -->
+              <div class="coverage-attributes-strip">
+                <div class="attr-group">
+                  <span class="attr-group-title">Languages Detected:</span>
+                  <div class="chips-container" id="detectedLanguagesList">
+                    <span class="lang-chip">Python</span>
+                  </div>
+                </div>
+                <div class="attr-group">
+                  <span class="attr-group-title">Engaged Analyzers:</span>
+                  <div class="chips-container" id="engagedToolsList">
+                    <span class="tool-chip">Bandit v1.9</span>
+                    <span class="tool-chip">Pyflakes</span>
+                    <span class="tool-chip">AST Quality</span>
+                    <span class="tool-chip">AI Reviewer</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Collapsible Detailed File Breakdown Table -->
+              <details class="file-breakdown-details" open>
+                <summary class="file-breakdown-summary">
+                  <span>File-by-File Analysis Manifest</span>
+                  <span class="details-chevron">▾</span>
+                </summary>
+                <div class="table-responsive">
+                  <table class="file-manifest-table">
+                    <thead>
+                      <tr>
+                        <th>Changed File</th>
+                        <th>Identified Language</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Applied Analyzer Pipeline</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fileManifestBody">
+                      <!-- Populated dynamically via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <!-- Charts Visualization Grid -->
+          <div class="charts-section" id="charts">
+            <!-- Doughnut: Distribution by Type -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <h3 class="chart-title">Findings by Category</h3>
+                  <div class="chart-subtitle">Security vs Bug vs Code Quality distribution</div>
+                </div>
+              </div>
+              <div class="doughnut-chart-wrapper">
+                <div class="canvas-wrap">
+                  <canvas id="typeChart"></canvas>
+                  <div class="doughnut-center-info">
+                    <strong id="totalIssueCount">6</strong>
+                    <span>Total Issues</span>
+                  </div>
+                </div>
+                <div class="custom-legend" id="typeLegend"></div>
+              </div>
             </div>
 
-            <div class="issues-section">
-                <h2>Detected Issues</h2>
-                <div id="issuesList"></div>
+            <!-- Bar Chart: Distribution by Severity -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <h3 class="chart-title">Severity Prioritization</h3>
+                  <div class="chart-subtitle">Triage findings from Critical to Low</div>
+                </div>
+              </div>
+              <div class="bar-chart-wrapper">
+                <canvas id="severityChart"></canvas>
+              </div>
+              <div class="chart-legend-strip">
+                <span class="legend-pill pill-high"><i class="dot-high"></i> High / Critical</span>
+                <span class="legend-pill pill-med"><i class="dot-med"></i> Medium</span>
+                <span class="legend-pill pill-low"><i class="dot-low"></i> Low Risk</span>
+              </div>
             </div>
-        </div>
+          </div>
 
-        <div id="loading" class="hidden">
-            <div class="spinner"></div>
-            <p>Analyzing Pull Request...</p>
-        </div>
+          <!-- Detailed Findings Feed -->
+          <section class="issues-feed-section" id="detectedIssues">
+            <div class="feed-header">
+              <div class="feed-title-wrap">
+                <h3 class="feed-title">Detailed Vulnerability &amp; Bug Findings</h3>
+                <span class="badge-total-count" id="issueHeadingCount">6 Issues Flagged</span>
+              </div>
+
+              <!-- Filter Controls -->
+              <div class="filter-controls">
+                <div class="filter-group">
+                  <label for="severityFilter">Severity:</label>
+                  <select id="severityFilter">
+                    <option value="all">All Severities</option>
+                    <option value="high">High &amp; Critical</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label for="typeFilter">Category:</label>
+                  <select id="typeFilter">
+                    <option value="all">All Categories</option>
+                    <option value="security">Security</option>
+                    <option value="bug">Bug</option>
+                    <option value="quality">Quality</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Issues List Dynamic Container -->
+            <div class="issues-list-container" id="issuesList" aria-live="polite"></div>
+
+            <div class="empty-feed-card" id="emptyState" hidden>
+              <span class="empty-icon">✓</span>
+              <h4>No Issues Found For Active Filters</h4>
+              <p>Adjust your filter settings above to view other findings.</p>
+            </div>
+          </section>
+
+          <!-- Audit History Log (SQLite) -->
+          <section class="history-log-section" id="historySection">
+            <div class="history-card">
+              <div class="history-header">
+                <div>
+                  <span class="history-kicker">SQLITE DATABASE PERSISTENCE</span>
+                  <h3 class="history-title">Pull Request Review Audit Log</h3>
+                </div>
+                <button id="refreshHistoryBtn" type="button" class="btn-refresh">
+                  <span>↻</span> Sync History
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Audit ID</th>
+                      <th>Pull Request / Repository</th>
+                      <th>Risk Evaluation</th>
+                      <th>Timestamp (UTC)</th>
+                      <th class="text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTableBody">
+                    <tr><td colspan="5" class="table-loading">Querying SQLite database (reviews.db)...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- Project Footer -->
+        <footer class="app-footer">
+          <div class="footer-left">
+            <span class="footer-gem">⬡</span>
+            <span>Batch-13 Final Year Project • Department of Computer Science &amp; Engineering</span>
+          </div>
+          <div class="footer-right">
+            <span>Avinashilingam Institute for Home Science &amp; Higher Education for Women, Coimbatore</span>
+          </div>
+        </footer>
+      </div>
     </main>
+  </div>
 
-    <footer>
-        <p>Batch-13 | Avinashilingam Institute for Home Science & Higher Education for Women</p>
-    </footer>
-
-    <script src="script.js"></script>
+  <!-- Interactive Toast Notification -->
+  <div class="toast-popup" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

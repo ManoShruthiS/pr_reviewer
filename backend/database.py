@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
-from datetime import datetime
+from datetime import datetime, timezone
 
-engine = create_engine("sqlite:///reviews.db")
+engine = create_engine("sqlite:///reviews.db", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
@@ -15,7 +15,7 @@ class Review(Base):
     pr_title = Column(String)
     risk_score = Column(Integer)
     issues_json = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
 def init_db():
@@ -32,11 +32,20 @@ def save_review(pr_url: str, pr_title: str, risk_score: int, issues_json: str):
     )
     session.add(review)
     session.commit()
+    review_id = review.id
     session.close()
+    return review_id
 
 
 def get_all_reviews():
     session = SessionLocal()
-    reviews = session.query(Review).order_by(Review.created_at.desc()).all()
+    reviews = session.query(Review).order_by(Review.created_at.desc()).limit(25).all()
     session.close()
     return reviews
+
+
+def get_review_by_id(review_id: int):
+    session = SessionLocal()
+    review = session.query(Review).filter(Review.id == review_id).first()
+    session.close()
+    return review
