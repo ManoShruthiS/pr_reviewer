@@ -4,14 +4,15 @@ A web-based intelligent code review system that analyzes GitHub Pull Requests, i
 
 ## Tech Stack
 
-- **Backend:** Python 3.11+, FastAPI
+- **Backend:** Python 3.11+, FastAPI, Uvicorn
 - **GitHub Integration:** PyGithub
 - **Bug Detection:** Pyflakes
 - **Security Scanning:** Bandit
-- **AI / Explanations:** OpenAI LLM API
-- **Risk Scoring:** Custom formula (0–100)
+- **AI / Explanations:** Contextual LLM API & Heuristic Explainer
+- **Multi-Language Detection:** Extensible Language Registry & Manifest (FR-04, FR-12)
+- **Risk Scoring:** Weighted Formula (0–100 scale)
 - **Database:** SQLite + SQLAlchemy
-- **Dashboard:** HTML / CSS / JS + Chart.js
+- **Dashboard:** Modern Vanilla HTML5 / CSS3 / JavaScript (GitHub Slate Theme)
 
 ## Project Structure
 
@@ -20,15 +21,18 @@ pr_reviewer/
 ├── frontend/
 │   ├── index.html
 │   ├── style.css
-│   └── script.js
+│   ├── script.js
+│   └── logo.png
 ├── backend/
 │   ├── main.py
 │   ├── fetcher.py
 │   ├── analyzer.py
 │   ├── ai_explainer.py
+│   ├── language_detector.py
 │   ├── risk_scorer.py
 │   └── database.py
 ├── requirements.txt
+├── run_project.bat
 ├── .gitignore
 └── README.md
 ```
