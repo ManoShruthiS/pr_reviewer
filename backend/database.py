@@ -1,8 +1,15 @@
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.pool import StaticPool
 from datetime import datetime, timezone
 
-engine = create_engine("sqlite:///reviews.db", connect_args={"check_same_thread": False})
+# In-memory SQLite database ensures zero persistent history on disk.
+# Every execution starts completely fresh without storing previous runs.
+engine = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool
+)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
@@ -19,6 +26,7 @@ class Review(Base):
 
 
 def init_db():
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
 

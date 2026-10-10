@@ -13,35 +13,35 @@ LANGUAGE_MAP = {
     ".pyw": {"language": "Python", "category": "source_code", "has_static_tool": True, "static_tools": ["Bandit", "Pyflakes", "AST"]},
 
     # JavaScript / TypeScript
-    ".js": {"language": "JavaScript", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".jsx": {"language": "JavaScript (React)", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".mjs": {"language": "JavaScript (ESM)", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".ts": {"language": "TypeScript", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".tsx": {"language": "TypeScript (React)", "category": "source_code", "has_static_tool": False, "static_tools": []},
+    ".js": {"language": "JavaScript", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".jsx": {"language": "JavaScript (React)", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".mjs": {"language": "JavaScript (ESM)", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".ts": {"language": "TypeScript", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".tsx": {"language": "TypeScript (React)", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
 
     # Java / Kotlin
-    ".java": {"language": "Java", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".kt": {"language": "Kotlin", "category": "source_code", "has_static_tool": False, "static_tools": []},
+    ".java": {"language": "Java", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".kt": {"language": "Kotlin", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
 
     # C / C++
-    ".c": {"language": "C", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".h": {"language": "C/C++ Header", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".cpp": {"language": "C++", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".hpp": {"language": "C++ Header", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".cc": {"language": "C++", "category": "source_code", "has_static_tool": False, "static_tools": []},
+    ".c": {"language": "C", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".h": {"language": "C/C++ Header", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".cpp": {"language": "C++", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".hpp": {"language": "C++ Header", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".cc": {"language": "C++", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
 
     # Go
-    ".go": {"language": "Go", "category": "source_code", "has_static_tool": False, "static_tools": []},
+    ".go": {"language": "Go", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
 
     # Rust
-    ".rs": {"language": "Rust", "category": "source_code", "has_static_tool": False, "static_tools": []},
+    ".rs": {"language": "Rust", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
 
     # PHP & Ruby
-    ".php": {"language": "PHP", "category": "source_code", "has_static_tool": False, "static_tools": []},
-    ".rb": {"language": "Ruby", "category": "source_code", "has_static_tool": False, "static_tools": []},
+    ".php": {"language": "PHP", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
+    ".rb": {"language": "Ruby", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
 
     # C#
-    ".cs": {"language": "C#", "category": "source_code", "has_static_tool": False, "static_tools": []},
+    ".cs": {"language": "C#", "category": "source_code", "has_static_tool": True, "static_tools": ["Security Rules", "Pattern Analyzer"]},
 
     # Shell
     ".sh": {"language": "Shell", "category": "script", "has_static_tool": False, "static_tools": []},

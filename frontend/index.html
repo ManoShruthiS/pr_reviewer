@@ -12,8 +12,101 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=6" />
+  <script src="script.js?v=6" defer></script>
+  <style>
+    /* Magic UI: Scroll Progress Bar */
+    .scroll-progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, #2f81f7 0%, #a855f7 50%, #3fb950 100%);
+      z-index: 9999; transition: width 0.08s ease-out; box-shadow: 0 0 10px rgba(88, 166, 255, 0.6);
+    }
+
+    /* Magic UI: Dot Pattern Canvas Background */
+    .dot-pattern-canvas {
+      position: absolute; top: 0; left: 0; right: 0; height: 520px; pointer-events: none; z-index: 0;
+      background-image: radial-gradient(rgba(240, 246, 252, 0.08) 1.2px, transparent 1.2px);
+      background-size: 22px 22px;
+      mask-image: radial-gradient(ellipse 75% 65% at 50% 15%, black 20%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 15%, black 20%, transparent 85%);
+    }
+
+
+    /* Magic UI: Animated Shiny Text */
+    .animated-shiny-text {
+      background: linear-gradient(110deg, #3fb950 20%, #ffffff 50%, #3fb950 80%);
+      background-size: 200% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shinyTextSweep 4s ease-in-out infinite;
+    }
+    @keyframes shinyTextSweep { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Magic UI: Animated Beam Pipeline */
+    .animated-beam-pipeline {
+      display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+      align-items: center !important; justify-content: space-between !important;
+      margin: 28px auto 22px !important; padding: 16px 24px !important;
+      background: rgba(13, 17, 23, 0.75) !important; border: 1px solid #30363d !important;
+      border-radius: 12px !important; max-width: 620px !important; width: 100% !important;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    }
+    .beam-node { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 6px !important; flex-shrink: 0 !important; z-index: 2 !important; }
+    .beam-node-icon {
+      width: 38px !important; height: 38px !important; border-radius: 50% !important; background: #161b22 !important;
+      border: 1.5px solid #30363d !important; display: flex !important; align-items: center !important; justify-content: center !important;
+      font-size: 14px !important; color: #fff !important; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35) !important;
+      transition: transform 0.2s ease, border-color 0.2s ease !important;
+    }
+    .beam-node:hover .beam-node-icon { transform: scale(1.12) !important; border-color: #2f81f7 !important; box-shadow: 0 0 12px rgba(88, 166, 255, 0.4) !important; }
+    .beam-node.node-success .beam-node-icon { border-color: rgba(63, 185, 80, 0.6) !important; color: #3fb950 !important; background: rgba(35, 134, 54, 0.2) !important; }
+    .beam-node-label { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10px; font-weight: 600; color: #656c76; letter-spacing: 0.3px; white-space: nowrap; }
+    .beam-connector { flex: 1 !important; height: 2px !important; min-width: 28px !important; background: #21262d !important; position: relative !important; margin: 0 10px 18px !important; overflow: hidden !important; }
+    .beam-pulse {
+      position: absolute; top: 0; left: -30%; width: 35%; height: 100%;
+      background: linear-gradient(90deg, transparent, #58a6ff, #bc8cff, transparent);
+      box-shadow: 0 0 8px #58a6ff; animation: beamPulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .pulse-delay-1 { animation-delay: 0.6s; }
+    .pulse-delay-2 { animation-delay: 1.2s; }
+    @keyframes beamPulse { 0% { left: -30%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+
+
+
+    /* Magic UI: Confetti Canvas */
+    .confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
+
+    /* Single Person Hover Tooltip */
+    .avatar-name-tooltip {
+      position: absolute !important; bottom: calc(100% + 10px) !important; left: 50% !important;
+      transform: translateX(-50%) translateY(4px) !important;
+      background: #161b22 !important; border: 1px solid #30363d !important;
+      color: #fff !important; padding: 4px 10px !important; border-radius: 6px !important;
+      font-size: 11px !important; font-weight: 600 !important; white-space: nowrap !important;
+      pointer-events: none !important; opacity: 0 !important; visibility: hidden !important;
+      transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s !important;
+      box-shadow: 0 8px 20px rgba(1, 4, 9, 0.75), 0 0 0 1px rgba(240, 246, 252, 0.08) !important;
+      z-index: 100 !important;
+    }
+    .avatar-name-tooltip::after {
+      content: ""; position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%); border-width: 5px; border-style: solid;
+      border-color: #161b22 transparent transparent transparent;
+    }
+    .avatar-circle-item:hover .avatar-name-tooltip {
+      opacity: 1 !important; visibility: visible !important;
+      transform: translateX(-50%) translateY(0) !important;
+    }
+    .avatar-circle-item:first-child .avatar-name-tooltip {
+      left: 0 !important;
+      transform: translateY(4px) !important;
+    }
+    .avatar-circle-item:first-child:hover .avatar-name-tooltip {
+      transform: translateY(0) !important;
+    }
+    .avatar-circle-item:first-child .avatar-name-tooltip::after {
+      left: 16px !important;
+      transform: none !important;
+    }
+  </style>
 </head>
 <body class="dark-theme">
   <div class="app-layout">
@@ -27,28 +120,86 @@
       </div>
 
       <nav class="nav-menu">
-        <div class="nav-section-title">NAVIGATION</div>
         <a class="nav-link active" href="#analyzerSection">
-          <span class="nav-icon">⟁</span>
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zM11 2.5h-1V4h1a1 1 0 011 1v5.256a2.251 2.251 0 11-1.5 0V5a2.5 2.5 0 00-2.5-2.5z"/>
+            </svg>
+          </span>
           <span class="nav-label">Analyze PR</span>
         </a>
         <a class="nav-link" href="#results">
-          <span class="nav-icon">⌬</span>
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 0 0-7.07 17.07l1.41-1.41A8 8 0 1 1 12 20v2a10 10 0 0 0 0-20z"/>
+              <path d="M12 12l4-4"/>
+              <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+            </svg>
+          </span>
           <span class="nav-label">Risk Overview</span>
         </a>
         <a class="nav-link" href="#coverageSection">
-          <span class="nav-icon">⛊</span>
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </span>
           <span class="nav-label">Coverage &amp; Scope</span>
         </a>
         <a class="nav-link" href="#detectedIssues">
-          <span class="nav-icon">⚑</span>
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="8" height="14" x="8" y="6" rx="4"/>
+              <path d="m19 7-3 2M5 7l3 2M19 19l-3-2M5 19l3-2M20 13h-4M4 13h4M10 4l1 2M14 4l-1 2"/>
+            </svg>
+          </span>
           <span class="nav-label">Issues &amp; Fixes</span>
         </a>
       </nav>
+
+      <!-- Interactive Team Widget -->
+      <div class="sidebar-footer">
+        <div class="avatar-circles-widget" id="teamWidget" tabindex="0" role="button" aria-haspopup="dialog" aria-label="View Project Team Details">
+          <div class="widget-kicker-row">
+            <span class="widget-kicker">PROJECT TEAM</span>
+            <span class="widget-dept-tag">AI&amp;DS</span>
+          </div>
+
+          <!-- Overlapping Avatar Circles: Hovering shows ONLY that person's name -->
+          <div class="avatar-circles-row">
+            <div class="avatar-circle-item">
+              <span class="avatar-avatar-badge lead">MS</span>
+              <div class="avatar-name-tooltip">Mano Shruthi S</div>
+            </div>
+            <div class="avatar-circle-item">
+              <span class="avatar-avatar-badge">PS</span>
+              <div class="avatar-name-tooltip">Pratigsaa S</div>
+            </div>
+            <div class="avatar-circle-item">
+              <span class="avatar-avatar-badge">SS</span>
+              <div class="avatar-name-tooltip">Safrina S</div>
+            </div>
+            <div class="avatar-circle-item">
+              <span class="avatar-avatar-badge">SV</span>
+              <div class="avatar-name-tooltip">Srivarshini V</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </aside>
 
     <!-- Main Content Viewport -->
     <main id="top" class="main-viewport">
+      <!-- Magic UI: Scroll Progress Bar -->
+      <div class="scroll-progress-bar" id="scrollProgress" aria-hidden="true"></div>
+
+      <!-- Magic UI: Dot Pattern Background -->
+      <div class="dot-pattern-canvas" aria-hidden="true"></div>
+
       <!-- Minimal Topbar Header -->
       <header class="topbar">
         <div class="topbar-left">
@@ -58,12 +209,6 @@
         </div>
 
         <div class="topbar-right">
-          <!-- Backend System Status Indicator -->
-          <div class="system-status-pill">
-            <span class="pulse-indicator" id="liveStatusDot"></span>
-            <span class="status-text" id="dataSourceBadge">System Online</span>
-          </div>
-
           <button id="exportReportBtn" type="button" class="btn-action-outline" title="Export or print review report">
             <span class="btn-icon">⎙</span> Export Report
           </button>
@@ -75,10 +220,10 @@
         <section class="hero-scanner-section" id="analyzerSection">
           <div class="scanner-header">
             <h1 class="hero-headline">
-              Intelligent Pull Request <span class="gradient-text">Risk Analyzer</span>
+              Every Pull Request Has a Story. <span class="gradient-text">Let's Inspect It.</span>
             </h1>
             <p class="hero-subtext">
-              Automated static vulnerability scanning, multi-language coverage, and AI-assisted defect analysis before merge.
+              PR-Doc is your intelligent code review agent, inspecting pull requests and analyzing merge risks in real time.
             </p>
           </div>
 
@@ -100,7 +245,7 @@
               />
               <button class="btn-primary-review" type="submit">
                 <span class="btn-sparkle">✦</span>
-                <span class="btn-label">Run Analysis</span>
+                <span class="btn-label">Ask PR-Doc to Review</span>
                 <span class="btn-arrow">→</span>
               </button>
             </div>
@@ -117,17 +262,6 @@
               <p class="error-msg" id="reviewErrorMsg">Unable to fetch pull request from GitHub.</p>
             </div>
             <button class="error-dismiss" id="dismissErrorBtn" type="button" aria-label="Dismiss error">✕</button>
-          </div>
-
-          <!-- Quick Test with Real Public PRs -->
-          <div class="quick-samples-strip">
-            <span class="samples-label">Live Test Examples:</span>
-            <button type="button" class="sample-chip" data-url="https://github.com/psf/requests/pull/7628" title="Click to test live on real public PR">
-              <span class="sample-icon">⚡</span> psf/requests #7628
-            </button>
-            <button type="button" class="sample-chip" data-url="https://github.com/pallets/flask/pull/5512" title="Click to test live on real public PR">
-              <span class="sample-icon">⚡</span> pallets/flask #5512
-            </button>
           </div>
         </section>
 
@@ -147,34 +281,55 @@
           </div>
         </section>
 
-        <!-- Ready State Card (Visible when awaiting PR analysis) -->
+        <!-- Ready State Card (Visible when awaiting PR analysis) with Magic UI Beam & Marquee -->
         <section class="ready-state-card" id="readyPrompt">
           <div class="ready-card-content">
-            <div class="ready-icon-halo">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            <div class="ready-icon-halo" title="PR-Doc Code Health Inspector">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.5 3v5a3.5 3.5 0 0 0 7 0V3"></path>
+                <path d="M8 11.5v3a4.5 4.5 0 0 0 9 0v-1.5"></path>
+                <circle cx="18" cy="10" r="2.5"></circle>
+                <path d="M3 3h3"></path>
+                <path d="M10 3h3"></path>
               </svg>
             </div>
-            <h3 class="ready-title">Awaiting Pull Request for Inspection</h3>
+            <h3 class="ready-title">PR-Doc Is Ready to Examine Your Pull Request</h3>
             <p class="ready-text">
-              Enter any public GitHub pull request URL above and click <strong>Run Analysis</strong>, or choose a live test example. PR-Doc will connect directly to GitHub, parse the changed files with static AST analyzers, detect security vulnerabilities, and evaluate risk.
+              Paste any public GitHub PR link above to get started.<br>
+              PR-Doc will inspect code changes, run static security analysis, and deliver a comprehensive risk diagnosis.
             </p>
-            <div class="ready-features-grid">
-              <div class="ready-feat-item">
-                <span class="feat-dot green"></span>
-                <span>Live GitHub Diff Fetching</span>
+
+            <!-- Magic UI: Animated Beam Pipeline -->
+            <div class="animated-beam-pipeline" aria-label="Inspection Pipeline Architecture">
+              <div class="beam-node" title="Live GitHub PR input">
+                <div class="beam-node-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                </div>
+                <span class="beam-node-label">GitHub PR</span>
               </div>
-              <div class="ready-feat-item">
-                <span class="feat-dot blue"></span>
-                <span>Static Security &amp; Bug Analysis</span>
+              <div class="beam-connector">
+                <div class="beam-pulse"></div>
               </div>
-              <div class="ready-feat-item">
-                <span class="feat-dot purple"></span>
-                <span>AI Risk Scoring &amp; Patch Synthesis</span>
+              <div class="beam-node" title="Static AST & Security Analyzers">
+                <div class="beam-node-icon">🛡️</div>
+                <span class="beam-node-label">Static AST</span>
+              </div>
+              <div class="beam-connector">
+                <div class="beam-pulse pulse-delay-1"></div>
+              </div>
+              <div class="beam-node" title="AI Explainer & Risk Scorer">
+                <div class="beam-node-icon">🧠</div>
+                <span class="beam-node-label">AI Risk Model</span>
+              </div>
+              <div class="beam-connector">
+                <div class="beam-pulse pulse-delay-2"></div>
+              </div>
+              <div class="beam-node node-success" title="Actionable Merge Verdict & Fixes">
+                <div class="beam-node-icon">✓</div>
+                <span class="beam-node-label">Risk Report</span>
               </div>
             </div>
+
           </div>
         </section>
 
@@ -191,7 +346,16 @@
             <!-- Overall Risk Score Gauge -->
             <article class="kpi-card risk-gauge-card">
               <div class="kpi-header">
-                <span class="kpi-tag">OVERALL RISK</span>
+                <div class="metric-title-group">
+                  <div class="metric-icon-box risk-box" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2a10 10 0 0 0-7.07 17.07l1.41-1.41A8 8 0 1 1 12 20v2a10 10 0 0 0 0-20z"/>
+                      <path d="M12 12l4-4"/>
+                      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <span class="metric-label">Overall Risk</span>
+                </div>
                 <span class="kpi-info-icon" title="Risk Score calculated on a 0–100 scale from issue severity and category weights">ⓘ</span>
               </div>
               <div class="gauge-compact-wrap">
@@ -215,58 +379,66 @@
             <!-- Metric 1: Security -->
             <article class="kpi-card metric-card card-security">
               <div class="metric-top-row">
-                <div class="metric-icon-box security-box">🛡️</div>
-                <span class="metric-label">Security Flaws</span>
+                <div class="metric-title-group">
+                  <div class="metric-icon-box security-box" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                  </div>
+                  <span class="metric-label">Security Flaws</span>
+                </div>
+                <span class="metric-status-pill pill-safe" id="securityStatusPill">Clean · 0 Issues</span>
               </div>
               <div class="metric-value-wrap">
                 <span class="metric-number" id="securityCount">0</span>
-                <span class="metric-unit">CVE / CWEs</span>
+                <span class="metric-unit">Vulnerabilities</span>
               </div>
-              <div class="metric-bar-bg"><div class="metric-bar-fill bar-security"></div></div>
+              <div class="metric-subtext" id="securitySubtext">Zero CVE / CWE security risks</div>
             </article>
 
             <!-- Metric 2: Bugs -->
             <article class="kpi-card metric-card card-bug">
               <div class="metric-top-row">
-                <div class="metric-icon-box bug-box">🐞</div>
-                <span class="metric-label">Syntax &amp; Bugs</span>
+                <div class="metric-title-group">
+                  <div class="metric-icon-box bug-box" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="8" height="14" x="8" y="6" rx="4"/>
+                      <path d="m19 7-3 2M5 7l3 2M19 19l-3-2M5 19l3-2M20 13h-4M4 13h4M10 4l1 2M14 4l-1 2"/>
+                    </svg>
+                  </div>
+                  <span class="metric-label">Syntax &amp; Bugs</span>
+                </div>
+                <span class="metric-status-pill pill-safe" id="bugStatusPill">Clean · 0 Issues</span>
               </div>
               <div class="metric-value-wrap">
                 <span class="metric-number" id="bugCount">0</span>
-                <span class="metric-unit">Exceptions</span>
+                <span class="metric-unit">Runtime Bugs</span>
               </div>
-              <div class="metric-bar-bg"><div class="metric-bar-fill bar-bug"></div></div>
+              <div class="metric-subtext" id="bugSubtext">Zero syntax or unhandled exceptions</div>
             </article>
 
             <!-- Metric 3: Quality -->
             <article class="kpi-card metric-card card-quality">
               <div class="metric-top-row">
-                <div class="metric-icon-box quality-box">⚙️</div>
-                <span class="metric-label">Code Quality</span>
+                <div class="metric-title-group">
+                  <div class="metric-icon-box quality-box" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="16 18 22 12 16 6"/>
+                      <polyline points="8 6 2 12 8 18"/>
+                    </svg>
+                  </div>
+                  <span class="metric-label">Code Quality</span>
+                </div>
+                <span class="metric-status-pill pill-safe" id="qualityStatusPill">Clean · 0 Issues</span>
               </div>
               <div class="metric-value-wrap">
                 <span class="metric-number" id="qualityCount">0</span>
                 <span class="metric-unit">Code Smells</span>
               </div>
-              <div class="metric-bar-bg"><div class="metric-bar-fill bar-quality"></div></div>
+              <div class="metric-subtext" id="qualitySubtext">Style &amp; maintainability findings</div>
             </article>
           </div>
 
-          <!-- AI Executive Summary Panel -->
-          <article class="ai-summary-card">
-            <div class="ai-summary-header">
-              <div class="ai-chip">
-                <span class="ai-sparkle">✦</span> AI SYNTHESIS
-              </div>
-              <span class="ai-model-tag" id="aiModelBadge">GPT-4o-mini &amp; Expert Heuristics</span>
-            </div>
-            <div class="ai-summary-body" id="aiSummary">
-              Run an analysis on any public pull request to view automated risk evaluation and vulnerability diagnosis.
-            </div>
-            <div class="ai-summary-footer">
-              <span class="verified-dot"></span> Automated Security Decision Support System
-            </div>
-          </article>
 
           <!-- Analysis Coverage & Transparency Card (FR-12 & FR-04) -->
           <section class="coverage-section" id="coverageSection">
@@ -315,10 +487,10 @@
                 </div>
               </div>
 
-              <!-- Collapsible Detailed File Breakdown Table -->
-              <details class="file-breakdown-details" open>
+              <!-- Collapsible Detailed File Breakdown Table (Click to expand) -->
+              <details class="file-breakdown-details">
                 <summary class="file-breakdown-summary">
-                  <span>File-by-File Analysis Manifest</span>
+                  <span>File-by-File Analysis Manifest (Click to inspect all files)</span>
                   <span class="details-chevron">▾</span>
                 </summary>
                 <div class="table-responsive">
@@ -383,15 +555,132 @@
           </section>
         </section>
 
-        <!-- Minimal App Footer -->
-        <footer class="app-footer">
-          <div class="footer-minimal">
-            <span>PR-Doc • AI-Powered Pull Request Code Review &amp; Risk Analysis</span>
-          </div>
-        </footer>
       </div>
     </main>
   </div>
+
+  <!-- 1-Page Colorful Landscape Executive Audit Report (Print & PDF Export) -->
+  <div class="executive-report-sheet" id="executiveReportSheet" aria-hidden="true">
+    <!-- Header Row -->
+    <header class="exec-header">
+      <div class="exec-brand-group">
+        <img src="logo.png" alt="PR-Doc" class="exec-logo" />
+        <div>
+          <div class="exec-title">PR-Doc · Executive Code Review &amp; Risk Certification</div>
+          <div class="exec-subtitle">Automated Multi-Engine Static Security, Defect &amp; Maintainability Analysis</div>
+        </div>
+      </div>
+      <div class="exec-meta-group">
+        <div class="exec-pr-badge" id="execPrTarget">github/repo#1</div>
+        <div class="exec-meta-sub">
+          <span id="execScanDate">Oct 25, 2026</span> · 
+          <span class="exec-verdict-pill verdict-approved" id="execVerdictPill">✓ MERGE APPROVED</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Row 1: KPI Cards Grid (4 Compact Cards) -->
+    <div class="exec-kpi-grid">
+      <!-- 1. Overall Risk -->
+      <div class="exec-card exec-risk-card">
+        <div class="exec-card-head">
+          <span class="exec-card-title">OVERALL RISK SCORE</span>
+          <span class="exec-badge low" id="execRiskLevel">LOW RISK</span>
+        </div>
+        <div class="exec-risk-body">
+          <div class="exec-score-big" id="execRiskScore">10<span class="exec-score-denom">/100</span></div>
+          <div class="exec-risk-desc" id="execRiskDesc">Only minor observations. Safe to merge with standard approval.</div>
+        </div>
+      </div>
+
+      <!-- 2. Security Flaws -->
+      <div class="exec-card">
+        <div class="exec-card-head">
+          <span class="exec-card-title">SECURITY FLAWS</span>
+          <span class="exec-status-pill pill-safe" id="execSecPill">Clean · 0</span>
+        </div>
+        <div class="exec-card-val" id="execSecCount">0</div>
+        <div class="exec-card-sub">Vulnerabilities (Zero CVE / CWE risks)</div>
+      </div>
+
+      <!-- 3. Syntax & Bugs -->
+      <div class="exec-card">
+        <div class="exec-card-head">
+          <span class="exec-card-title">SYNTAX &amp; BUGS</span>
+          <span class="exec-status-pill pill-safe" id="execBugPill">Clean · 0</span>
+        </div>
+        <div class="exec-card-val" id="execBugCount">0</div>
+        <div class="exec-card-sub">Runtime Defects (Zero exceptions)</div>
+      </div>
+
+      <!-- 4. Code Quality -->
+      <div class="exec-card">
+        <div class="exec-card-head">
+          <span class="exec-card-title">CODE QUALITY</span>
+          <span class="exec-status-pill pill-quality" id="execQualPill">5 Smells</span>
+        </div>
+        <div class="exec-card-val" id="execQualCount">5</div>
+        <div class="exec-card-sub">Code Smells (PEP 8 &amp; Maintainability)</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Scope & Transparency Strip -->
+    <div class="exec-scope-strip">
+      <div class="exec-scope-item">
+        <span class="exec-scope-label">PR Scope:</span>
+        <strong id="execScopeFiles">2 / 2 Files Analyzed (100%)</strong>
+      </div>
+      <div class="exec-scope-divider"></div>
+      <div class="exec-scope-item">
+        <span class="exec-scope-label">Languages:</span>
+        <span class="exec-tag-list" id="execScopeLangs"><span class="exec-tag">Python</span></span>
+      </div>
+      <div class="exec-scope-divider"></div>
+      <div class="exec-scope-item">
+        <span class="exec-scope-label">Engaged Analyzers:</span>
+        <span class="exec-tag-list" id="execScopeTools"><span class="exec-tag">Pyflakes AST</span><span class="exec-tag">Bandit Security</span><span class="exec-tag">Pattern Scanner</span></span>
+      </div>
+    </div>
+
+    <!-- Row 3: Compact Executive Findings Ledger Table -->
+    <div class="exec-table-wrap">
+      <div class="exec-table-head-bar">
+        <span class="exec-table-heading">AUDIT FINDINGS &amp; ACTIONABLE REMEDIATION LEDGER</span>
+        <span class="exec-table-count" id="execFindingsCount">5 Observations Flagged</span>
+      </div>
+      <table class="exec-table">
+        <thead>
+          <tr>
+            <th style="width: 30px;">#</th>
+            <th style="width: 75px;">Severity</th>
+            <th style="width: 80px;">Category</th>
+            <th style="width: 105px;">Rule / Engine</th>
+            <th style="width: 160px;">Source Location</th>
+            <th>Diagnostic Finding &amp; Proposed Fix</th>
+          </tr>
+        </thead>
+        <tbody id="execTableBody">
+          <!-- Populated dynamically via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Bar -->
+    <footer class="exec-footer">
+      <div class="exec-footer-left">
+        <span>PR-Doc Intelligent Code Review System</span> · <span>Deterministic AST &amp; Compliance Audit</span>
+      </div>
+      <div class="exec-footer-center">
+        <span>Confidential Pull Request Risk Certificate</span>
+      </div>
+      <div class="exec-footer-right">
+        <span>Page 1 of 1</span> · <strong id="execFooterVerdict">VERDICT: PASSED</strong>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Magic UI: Confetti Canvas -->
+  <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
 
   <!-- Interactive Toast Notification -->
   <div class="toast-popup" id="toast" role="status" aria-live="polite"></div>

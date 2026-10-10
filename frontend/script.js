@@ -80,6 +80,28 @@ function countBy(key, values = []) {
 
 let scoreAnimationId = null;
 
+// Magic UI: Number Ticker with cubic ease-out
+function animateNumberTicker(element, target, duration = 900) {
+  if (!element) return;
+  const start = parseInt(element.textContent, 10) || 0;
+  if (start === target) return;
+  const startTime = performance.now();
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (target - start) * ease);
+    element.textContent = current;
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      element.textContent = target;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
 function animateScoreCounter(targetScore, color) {
   const scoreEl = $('#riskScore');
   if (!scoreEl) return;
@@ -138,11 +160,60 @@ function updateMetrics(issues = []) {
   const qualEl = $('#qualityCount');
   const headingEl = $('#issueHeadingCount');
 
-  if (secEl) secEl.textContent = types.security || 0;
-  if (bugEl) bugEl.textContent = types.bug || 0;
-  if (qualEl) qualEl.textContent = types.quality || 0;
+  const secCount = types.security || 0;
+  const bugCount = types.bug || 0;
+  const qualCount = types.quality || 0;
+
+  if (secEl) animateNumberTicker(secEl, secCount);
+  if (bugEl) animateNumberTicker(bugEl, bugCount);
+  if (qualEl) animateNumberTicker(qualEl, qualCount);
   if (headingEl) headingEl.textContent = `${issues.length} Issues Flagged`;
+
+  const secPill = $('#securityStatusPill');
+  const bugPill = $('#bugStatusPill');
+  const qualPill = $('#qualityStatusPill');
+
+  const secSub = $('#securitySubtext');
+  const bugSub = $('#bugSubtext');
+  const qualSub = $('#qualitySubtext');
+
+  if (secPill) {
+    if (secCount === 0) {
+      secPill.textContent = 'Clean · 0 Issues';
+      secPill.className = 'metric-status-pill pill-safe';
+      if (secSub) secSub.textContent = 'Zero CVE / CWE security risks';
+    } else {
+      secPill.textContent = `${secCount} ${secCount === 1 ? 'Vulnerability' : 'Vulnerabilities'}`;
+      secPill.className = 'metric-status-pill pill-danger';
+      if (secSub) secSub.textContent = `${secCount} security vulnerability checks flagged`;
+    }
+  }
+
+  if (bugPill) {
+    if (bugCount === 0) {
+      bugPill.textContent = 'Clean · 0 Issues';
+      bugPill.className = 'metric-status-pill pill-safe';
+      if (bugSub) bugSub.textContent = 'Zero syntax or unhandled exceptions';
+    } else {
+      bugPill.textContent = `${bugCount} ${bugCount === 1 ? 'Runtime Bug' : 'Runtime Bugs'}`;
+      bugPill.className = 'metric-status-pill pill-warn';
+      if (bugSub) bugSub.textContent = `${bugCount} runtime defects requiring fixes`;
+    }
+  }
+
+  if (qualPill) {
+    if (qualCount === 0) {
+      qualPill.textContent = 'Clean · 0 Issues';
+      qualPill.className = 'metric-status-pill pill-safe';
+      if (qualSub) qualSub.textContent = 'High maintainability & clean code';
+    } else {
+      qualPill.textContent = `${qualCount} ${qualCount === 1 ? 'Code Smell' : 'Code Smells'}`;
+      qualPill.className = 'metric-status-pill pill-quality';
+      if (qualSub) qualSub.textContent = `${qualCount} maintainability & PEP 8 findings`;
+    }
+  }
 }
+
 
 function createIssueCard(issue, index) {
   const rawType = (issue.type || 'quality').toLowerCase();
@@ -152,18 +223,15 @@ function createIssueCard(issue, index) {
   const fileStr = issue.file || 'source.py';
   const lineStr = issue.line ? ` · Line ${issue.line}` : '';
   const cweStr = issue.cwe ? ` · CWE-${issue.cwe}` : '';
-  const sourceStr = issue.source || 'AI Contextual Review';
-  const isAi = sourceStr.toLowerCase().includes('ai');
-  const confidenceStr = issue.confidence || (isAi ? 'Medium' : 'High');
+  const sourceStr = issue.source || 'Static Analysis';
 
   return `
-    <article class="issue-card" data-type="${rawType}" data-severity="${rawSev}" style="animation-delay: ${index * 60}ms;">
+    <article class="issue-card severity-${rawSev} type-${rawType}" data-type="${rawType}" data-severity="${rawSev}" style="animation-delay: ${index * 60}ms;">
       <div class="issue-card-header">
         <div class="issue-tags-row">
           <span class="issue-type-badge ${rawType}">${typeName}</span>
           <span class="issue-sev-badge ${rawSev}">${severityName}</span>
           <span class="issue-source-tag">${escapeHTML(sourceStr)}</span>
-          <span class="issue-confidence-tag">Confidence: ${confidenceStr}</span>
         </div>
       </div>
 
@@ -174,14 +242,14 @@ function createIssueCard(issue, index) {
           <code>${escapeHTML(fileStr)}${lineStr}${cweStr}</code>
         </div>
         ${issue.explanation ? `<p class="issue-explanation">${escapeHTML(issue.explanation)}</p>` : ''}
-        ${issue.impact ? `<div class="issue-impact-box"><strong>Impact:</strong> ${escapeHTML(issue.impact)}</div>` : ''}
+        ${(rawType === 'security' || rawSev === 'high') && issue.impact ? `<div class="issue-impact-box"><strong>Impact:</strong> ${escapeHTML(issue.impact)}</div>` : ''}
 
         ${issue.fix ? `
           <div class="code-fix-block">
             <div class="code-fix-header">
-              <span class="fix-label">RECOMMENDED REMEDIATION</span>
+              <span class="fix-label">SUGGESTED CHANGE</span>
               <button class="btn-copy-fix" data-copy-issue="${issue.id || index}">
-                Copy Fix
+                Copy
               </button>
             </div>
             <pre><code>${escapeHTML(issue.fix)}</code></pre>
@@ -226,20 +294,6 @@ function renderIssues() {
   container.innerHTML = filtered.map((issue, index) => createIssueCard(issue, index)).join('');
 }
 
-function updateSummary(issues = [], repo = '', prTitle = '') {
-  const summaryEl = $('#aiSummary');
-  if (!summaryEl) return;
-
-  const count = issues.length;
-  const criticals = issues.filter(i => (i.severity || '').toLowerCase() === 'high').length;
-  const mediums = issues.filter(i => (i.severity || '').toLowerCase() === 'medium').length;
-
-  if (count === 0) {
-    summaryEl.innerHTML = `Analysis of <strong>${escapeHTML(prTitle)}</strong> identified zero security vulnerabilities or critical bugs. The changes follow standard coding practices and are considered safe for merge review.`;
-  } else {
-    summaryEl.innerHTML = `Automated analysis of <strong>${escapeHTML(prTitle)}</strong> identified <strong>${count} potential issues</strong> across security, runtime reliability, and maintainability. Found <strong>${criticals} high-severity</strong> and <strong>${mediums} medium-severity</strong> findings requiring inspection before merge integration.`;
-  }
-}
 
 function renderCoverage(coverage) {
   if (!coverage) return;
@@ -248,13 +302,13 @@ function renderCoverage(coverage) {
   const skippedCount = $('#coverageSkippedCount');
   const langCount = $('#coverageLangCount');
   const ratePill = $('#coverageRatePill');
-  const langChips = $('#langChips');
-  const toolChips = $('#toolChips');
+  const langChips = $('#detectedLanguagesList') || $('#langChips');
+  const toolChips = $('#engagedToolsList') || $('#toolChips');
   const manifestBody = $('#fileManifestBody');
 
-  if (analyzedCount) analyzedCount.textContent = coverage.analyzed_files ?? 0;
-  if (skippedCount) skippedCount.textContent = coverage.skipped_files ?? 0;
-  if (langCount) langCount.textContent = (coverage.languages_detected || []).length;
+  if (analyzedCount) animateNumberTicker(analyzedCount, coverage.analyzed_files ?? 0);
+  if (skippedCount) animateNumberTicker(skippedCount, coverage.skipped_files ?? 0);
+  if (langCount) animateNumberTicker(langCount, (coverage.languages_detected || []).length);
 
   if (ratePill) {
     const rate = coverage.coverage_percentage ?? 100;
@@ -298,6 +352,145 @@ function renderCoverage(coverage) {
   }
 }
 
+function renderExecutiveReport(reviewData) {
+  if (!reviewData) return;
+
+  const prTarget = $('#execPrTarget');
+  const scanDate = $('#execScanDate');
+  const verdictPill = $('#execVerdictPill');
+  const riskScore = $('#execRiskScore');
+  const riskLevel = $('#execRiskLevel');
+  const riskDesc = $('#execRiskDesc');
+  const footerVerdict = $('#execFooterVerdict');
+
+  const score = Number(reviewData.riskScore) || 0;
+  const risk = getRisk(score);
+  const issues = reviewData.issues || [];
+  const coverage = reviewData.coverage || {};
+  const prTitle = reviewData.prTitle || reviewData.repo || 'Pull Request Analysis';
+
+  if (prTarget) prTarget.textContent = prTitle;
+  if (scanDate) {
+    const d = new Date();
+    scanDate.textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' · ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  const isApproved = score <= 50;
+  if (verdictPill) {
+    verdictPill.textContent = isApproved ? '✓ MERGE APPROVED' : '✕ BLOCK MERGE';
+    verdictPill.className = `exec-verdict-pill ${isApproved ? 'verdict-approved' : 'verdict-blocked'}`;
+  }
+  if (footerVerdict) {
+    footerVerdict.textContent = `VERDICT: ${isApproved ? 'PASSED (SAFE TO MERGE)' : 'FAILED (BLOCK MERGE)'}`;
+    footerVerdict.style.color = isApproved ? '#3fb950' : '#ff7b72';
+  }
+
+  if (riskScore) riskScore.innerHTML = `${score}<span class="exec-score-denom">/100</span>`;
+  if (riskLevel) {
+    riskLevel.textContent = risk.name;
+    riskLevel.className = `exec-badge ${risk.className}`;
+  }
+  if (riskDesc) riskDesc.textContent = risk.caption;
+
+  // Counts
+  const types = countBy('type', issues);
+  const secCount = types.security || 0;
+  const bugCount = types.bug || 0;
+  const qualCount = types.quality || 0;
+
+  const secVal = $('#execSecCount');
+  const bugVal = $('#execBugCount');
+  const qualVal = $('#execQualCount');
+  if (secVal) secVal.textContent = secCount;
+  if (bugVal) bugVal.textContent = bugCount;
+  if (qualVal) qualVal.textContent = qualCount;
+
+  const secPill = $('#execSecPill');
+  const bugPill = $('#execBugPill');
+  const qualPill = $('#execQualPill');
+  if (secPill) {
+    secPill.textContent = secCount === 0 ? 'Clean · 0' : `${secCount} Flaws`;
+    secPill.className = `exec-status-pill ${secCount === 0 ? 'pill-safe' : 'pill-danger'}`;
+  }
+  if (bugPill) {
+    bugPill.textContent = bugCount === 0 ? 'Clean · 0' : `${bugCount} Bugs`;
+    bugPill.className = `exec-status-pill ${bugCount === 0 ? 'pill-safe' : 'pill-warn'}`;
+  }
+  if (qualPill) {
+    qualPill.textContent = qualCount === 0 ? 'Clean · 0' : `${qualCount} Smells`;
+    qualPill.className = `exec-status-pill ${qualCount === 0 ? 'pill-safe' : 'pill-quality'}`;
+  }
+
+  // Scope & Transparency
+  const scopeFiles = $('#execScopeFiles');
+  if (scopeFiles) {
+    const analyzed = coverage.analyzed_files ?? (coverage.file_breakdown ? coverage.file_breakdown.length : 1);
+    const skipped = coverage.skipped_files ?? 0;
+    const totalFiles = analyzed + skipped;
+    scopeFiles.textContent = `${analyzed} / ${totalFiles} Files (${coverage.coverage_percent ?? 100}%)`;
+  }
+  const scopeLangs = $('#execScopeLangs');
+  if (scopeLangs) {
+    const langs = (coverage.languages_detected && coverage.languages_detected.length) ? coverage.languages_detected : ['Python'];
+    scopeLangs.innerHTML = langs.map(l => `<span class="exec-tag">${escapeHTML(l)}</span>`).join('');
+  }
+  const scopeTools = $('#execScopeTools');
+  if (scopeTools) {
+    const tools = (coverage.tools_engaged && coverage.tools_engaged.length) ? coverage.tools_engaged : ['Pyflakes AST', 'Bandit Security', 'Pattern Scanner'];
+    scopeTools.innerHTML = tools.map(t => `<span class="exec-tag">${escapeHTML(t)}</span>`).join('');
+  }
+
+  // Table rows (strictly limit to top 7 to fit comfortably on 1 landscape page)
+  const tableBody = $('#execTableBody');
+  const countLabel = $('#execFindingsCount');
+  if (countLabel) countLabel.textContent = `${issues.length} Issues Flagged`;
+
+  if (tableBody) {
+    if (issues.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; color: #3fb950; padding: 14px; font-weight: 600;">
+            ✓ All deterministic static checks passed. Zero security vulnerabilities, bugs, or code smells detected.
+          </td>
+        </tr>
+      `;
+    } else {
+      const displayIssues = issues.slice(0, 7);
+      tableBody.innerHTML = displayIssues.map((issue, idx) => {
+        const rawSev = (issue.severity || 'low').toLowerCase();
+        const rawType = (issue.type || 'quality').toLowerCase();
+        const source = issue.source || 'Linter';
+        const fileStr = issue.file ? `${issue.file}${issue.line ? `:${issue.line}` : ''}` : 'source.py';
+        const fixSummary = issue.fix ? issue.fix.split('\n')[0].slice(0, 55) : (issue.fixExplanation || 'Review recommended practice');
+
+        return `
+          <tr>
+            <td class="col-num">${idx + 1}</td>
+            <td><span class="table-sev-badge sev-${rawSev}">${rawSev.toUpperCase()}</span></td>
+            <td><span class="table-cat-badge cat-${rawType}">${rawType.toUpperCase()}</span></td>
+            <td><code class="table-code">${escapeHTML(source)}</code></td>
+            <td><code class="table-code">${escapeHTML(fileStr)}</code></td>
+            <td class="col-desc">
+              <span class="finding-title">${escapeHTML(issue.message)}</span>
+              ${issue.fix ? `<div class="finding-fix-hint">${escapeHTML(fixSummary)}</div>` : ''}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (issues.length > 7) {
+        tableBody.innerHTML += `
+          <tr>
+            <td colspan="6" style="text-align: center; color: #8b949e; font-size: 8.5px; padding: 2px;">
+              + ${issues.length - 7} additional low-severity findings documented in full scan audit.
+            </td>
+          </tr>
+        `;
+      }
+    }
+  }
+}
+
 function renderReview(reviewData) {
   currentReview = reviewData;
   const repo = reviewData.repo || 'github/repository';
@@ -307,8 +500,13 @@ function renderReview(reviewData) {
 
   updateRiskScore(score);
   updateMetrics(issues);
-  updateSummary(issues, repo, prTitle);
   renderCoverage(reviewData.coverage);
+  renderExecutiveReport(reviewData);
+
+  // Magic UI Confetti on Low Risk / Clean merge safety
+  if (score <= 35) {
+    window.setTimeout(() => fireMagicConfetti(), 500);
+  }
 
   const titleEl = $('#resultsHeadingTitle');
   if (titleEl) titleEl.textContent = prTitle;
@@ -414,7 +612,7 @@ async function performReview(url) {
       if (results && !results.hidden) results.style.opacity = '1';
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span class="btn-sparkle">✦</span> Run Analysis <span class="btn-arrow">→</span>';
+        submitBtn.innerHTML = '<span class="btn-sparkle">✦</span> Ask PR-Doc to Review <span class="btn-arrow">→</span>';
       }
     }
   }
@@ -472,21 +670,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dismissBtn.addEventListener('click', hideReviewError);
   }
 
-  // Quick Test Sample Chips (Real Public PRs)
-  $$('.sample-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const url = btn.dataset.url;
-      if (!url) return;
-      const input = $('#prUrl');
-      if (input) {
-        input.value = url;
-        const error = $('#urlError');
-        if (error) error.hidden = true;
-        input.removeAttribute('aria-invalid');
-      }
-      performReview(url);
-    });
-  });
 
   // Export / Print Report Button
   const exportBtn = $('#exportReportBtn');
@@ -496,6 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Please analyze a pull request first before exporting.');
         return;
       }
+      renderExecutiveReport(currentReview);
       window.print();
     });
   }
@@ -555,4 +739,105 @@ document.addEventListener('DOMContentLoaded', () => {
       $$('.nav-link').forEach(item => item.classList.toggle('active', item === link));
     });
   });
+
+
+
+  // =========================================================================
+  // Magic UI Components Suite Runtime
+  // =========================================================================
+
+  // 1. Magic UI: Scroll Progress
+  function initScrollProgress() {
+    const bar = $('#scrollProgress');
+    if (!bar) return;
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      bar.style.width = `${progress}%`;
+    }, { passive: true });
+  }
+
+  // 2. Magic UI: Magic Card Glare / Mouse Spotlight
+  function initMagicCardSpotlight() {
+    const cards = $$('.kpi-card, .ai-summary-card, .coverage-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  }
+
+  // Initialize Magic UI Interactive Suite
+  initScrollProgress();
+  initMagicCardSpotlight();
 });
+
+// Magic UI: Lightweight Canvas Confetti
+function fireMagicConfetti() {
+  const canvas = $('#confettiCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const colors = ['#2f81f7', '#3fb950', '#a855f7', '#58a6ff', '#e3b341', '#f0883e'];
+  const count = 90;
+
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: window.innerWidth * (0.35 + Math.random() * 0.3),
+      y: window.innerHeight * 0.45,
+      vx: (Math.random() - 0.5) * 16,
+      vy: (Math.random() - 0.9) * 18,
+      size: Math.random() * 7 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      rotationSpeed: (Math.random() - 0.5) * 12,
+      opacity: 1,
+      gravity: 0.35
+    });
+  }
+
+  let animationFrame;
+  const startTime = performance.now();
+
+  function render(now) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = 0;
+
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.98;
+      p.rotation += p.rotationSpeed;
+      p.opacity = Math.max(0, 1 - (now - startTime) / 2800);
+
+      if (p.opacity > 0 && p.y < canvas.height + 20) {
+        alive++;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.opacity;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+        ctx.restore();
+      }
+    }
+
+    if (alive > 0) {
+      animationFrame = requestAnimationFrame(render);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      cancelAnimationFrame(animationFrame);
+    }
+  }
+
+  animationFrame = requestAnimationFrame(render);
+}

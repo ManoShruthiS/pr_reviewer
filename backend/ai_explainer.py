@@ -162,32 +162,32 @@ def generate_expert_explanation(issue: dict):
         issue["severity"] = "high"
         issue["type"] = "bug"
         issue["explanation"] = f"Reference to undefined variable '{var_name}'. When this code path executes at runtime, Python will raise a NameError."
-        issue["impact"] = "High: Runtime crash (NameError) terminating the request or worker process."
-        issue["fix"] = f"# Define or import '{var_name}' before referencing it\n{var_name} = initialize_{var_name}()"
+        issue["impact"] = "High: Runtime crash (NameError) terminating execution of this module or route."
+        issue["fix"] = f"# Define or initialize '{var_name}' before referencing it:\n{var_name} = ... "
         issue["fixExplanation"] = f"Ensure '{var_name}' is properly defined in scope or imported from the correct module."
 
     elif "imported but unused" in msg or "unused import" in msg:
         mod_name = msg.split("'")[1] if "'" in msg else "module"
-        issue["severity"] = "medium"
+        issue["severity"] = "low"
         issue["type"] = "quality"
-        issue["explanation"] = f"The module '{mod_name}' is imported but never referenced in the active file scope."
-        issue["impact"] = "Low/Medium: Unnecessary memory overhead, circular import risks, and confusing dependency trees."
-        issue["fix"] = f"# Remove unused import line:\n# import {mod_name}"
-        issue["fixExplanation"] = f"Delete unused import '{mod_name}' to keep modules lean and clean."
+        issue["explanation"] = f"Module '{mod_name}' is imported on this line but never referenced."
+        issue["impact"] = ""
+        issue["fix"] = f"- import {mod_name}"
+        issue["fixExplanation"] = "Remove unused import to comply with PEP 8."
 
     elif "bare 'except:'" in msg:
         issue["severity"] = "medium"
         issue["type"] = "quality"
         issue["explanation"] = "A bare 'except:' clause intercepts all exceptions, including KeyboardInterrupt and SystemExit signals."
-        issue["impact"] = "Medium: Hides fatal bugs and prevents graceful process shutdowns or debugging."
-        issue["fix"] = "try:\n    perform_action()\nexcept Exception as err:\n    logger.error(f'Action failed: {err}')"
-        issue["fixExplanation"] = "Catch specific exceptions or at least catch 'Exception' and log the diagnostic stack trace."
+        issue["impact"] = "Medium: May mask fatal errors or prevent clean program shutdown."
+        issue["fix"] = "- except:\n+ except Exception as err:"
+        issue["fixExplanation"] = "Catch specific exceptions or 'Exception' instead of catching all system signals."
 
     elif "mutable default argument" in msg:
         issue["severity"] = "medium"
         issue["type"] = "bug"
         issue["explanation"] = "Python creates default argument objects only once at function definition time. Mutating this default modifies it across all subsequent invocations."
-        issue["impact"] = "Medium: Inconsistent state leakage across different user requests or function calls."
+        issue["impact"] = ""
         issue["fix"] = "def process_data(items=None):\n    if items is None:\n        items = []\n    items.append('processed')\n    return items"
         issue["fixExplanation"] = "Use None as the default argument sentinel and initialize a new list/dictionary inside the function body."
 
@@ -196,32 +196,32 @@ def generate_expert_explanation(issue: dict):
         issue["type"] = "bug"
         issue["explanation"] = f"Code contains invalid Python syntax: {msg}. The file cannot be compiled or imported."
         issue["impact"] = "Critical: Prevents module import or application startup."
-        issue["fix"] = "# Correct the syntax error at the flagged line\n# Check for missing colons, mismatched brackets, or invalid keywords"
-        issue["fixExplanation"] = "Ensure Python syntax complies with PEP 8 and valid grammar specification."
+        issue["fix"] = "# Correct the syntax error at the flagged line"
+        issue["fixExplanation"] = "Ensure Python syntax complies with valid grammar specifications."
 
     elif "wildcard import" in msg:
         issue["severity"] = "low"
         issue["type"] = "quality"
-        issue["explanation"] = "Wildcard imports ('from module import *') import all public names into the current namespace."
-        issue["impact"] = "Low: Namespace pollution, hidden name collisions, and reduced code readability."
-        issue["fix"] = "from module import specific_function, SpecificClass"
-        issue["fixExplanation"] = "Explicitly list the functions or classes needed from the package."
+        issue["explanation"] = "Wildcard imports ('from module import *') pollute the namespace and obscure symbol origins."
+        issue["impact"] = ""
+        issue["fix"] = "# Explicitly import required symbols:\nfrom module import specific_function"
+        issue["fixExplanation"] = "Explicitly list required names (PEP 8)."
 
     elif "high function complexity" in msg:
         issue["severity"] = "low"
         issue["type"] = "quality"
-        issue["explanation"] = "Function contains excessive lines and responsibilities, violating the Single Responsibility Principle."
-        issue["impact"] = "Low: Difficult to unit-test, maintain, and review."
-        issue["fix"] = "# Refactor into smaller sub-routines:\ndef validate_payload(...): ...\ndef persist_record(...): ..."
-        issue["fixExplanation"] = "Extract distinct tasks into well-tested, isolated helper methods."
+        issue["explanation"] = "Function is lengthy and handles multiple responsibilities. Consider modularizing into smaller helper routines."
+        issue["impact"] = ""
+        issue["fix"] = "# Split into smaller modular functions with single responsibility"
+        issue["fixExplanation"] = "Modular functions are easier to test and maintain."
 
     else:
         # Default fallback
         if not issue.get("explanation"):
-            issue["explanation"] = f"Detected issue: {issue.get('message', 'Code analysis finding')}. This pattern may introduce bugs or maintenance debt."
+            issue["explanation"] = f"Detected issue: {issue.get('message', 'Code analysis finding')}."
         if not issue.get("impact"):
-            issue["impact"] = f"Potential {severity}-severity issue that could affect software reliability or security."
+            issue["impact"] = ""
         if not issue.get("fix"):
-            issue["fix"] = "# Refactor this section to follow recommended coding standards and conventions"
+            issue["fix"] = "# Review flagged line and align with clean code standards"
         if not issue.get("fixExplanation"):
-            issue["fixExplanation"] = "Review the flagged code and apply clean-code design patterns."
+            issue["fixExplanation"] = "Follow recommended clean code guidelines."

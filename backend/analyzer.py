@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 
-def run_pyflakes(code: str, filename: str) -> list:
+def run_pyflakes(code: str, filename: str, is_fragment: bool = False) -> list:
     issues = []
     try:
         tree = ast.parse(code)
@@ -23,6 +23,9 @@ def run_pyflakes(code: str, filename: str) -> list:
                 pass
 
             def syntaxError(self, filename, message, lineno, offset, text):
+                # Suppress false syntax errors caused by patch hunk fragments lacking scope
+                if is_fragment and ("indent" in str(message).lower() or "unexpected eof" in str(message).lower()):
+                    return
                 self.messages.append({
                     "id": f"bug_{len(self.messages)+1}",
                     "type": "bug",
@@ -30,44 +33,51 @@ def run_pyflakes(code: str, filename: str) -> list:
                     "file": filename,
                     "line": lineno or 1,
                     "message": f"Syntax error: {message}",
-                    "source": "Static Tool (Pyflakes)",
-                    "confidence": "High"
+                    "source": "Pyflakes Syntax"
                 })
 
             def flake(self, message):
-                severity = "low"
                 msg_str = str(message)
                 clean_msg = msg_str.split(": ", 1)[-1] if ": " in msg_str else msg_str
-                if "undefined name" in clean_msg.lower() or "used before assignment" in clean_msg.lower():
+                msg_lower = clean_msg.lower()
+
+                if "undefined name" in msg_lower or "used before assignment" in msg_lower:
+                    itype = "bug"
                     severity = "high"
-                elif "imported but unused" in clean_msg.lower():
-                    severity = "medium"
+                    source = "Pyflakes F821"
+                elif "imported but unused" in msg_lower or "redefinition of unused" in msg_lower:
+                    itype = "quality"
+                    severity = "low"
+                    source = "Pyflakes F401"
+                else:
+                    itype = "quality"
+                    severity = "low"
+                    source = "Pyflakes"
 
                 self.messages.append({
-                    "id": f"bug_{len(self.messages)+1}",
-                    "type": "bug",
+                    "id": f"issue_{len(self.messages)+1}",
+                    "type": itype,
                     "severity": severity,
                     "file": filename,
                     "line": getattr(message, "lineno", 1),
                     "message": clean_msg,
-                    "source": "Static Tool (Pyflakes)",
-                    "confidence": "High"
+                    "source": source
                 })
 
         reporter = Collector()
         pyflakes.api.check(code, filename, reporter)
         issues.extend(reporter.messages)
     except SyntaxError as e:
-        issues.append({
-            "id": f"bug_{len(issues)+1}",
-            "type": "bug",
-            "severity": "high",
-            "file": filename,
-            "line": e.lineno or 1,
-            "message": f"Syntax error: {e.msg}",
-            "source": "Static Tool (Pyflakes)",
-            "confidence": "High"
-        })
+        if not (is_fragment and ("indent" in str(e.msg).lower() or "unexpected eof" in str(e.msg).lower())):
+            issues.append({
+                "id": f"bug_{len(issues)+1}",
+                "type": "bug",
+                "severity": "high",
+                "file": filename,
+                "line": e.lineno or 1,
+                "message": f"Syntax error: {e.msg}",
+                "source": "Pyflakes Syntax"
+            })
     except Exception:
         pass
     return issues
@@ -99,8 +109,7 @@ def run_bandit(code: str, filename: str) -> list:
                     "message": item.get("issue_text", "Security vulnerability detected"),
                     "cwe": item.get("issue_cwe", {}).get("id", ""),
                     "test_id": item.get("test_id", ""),
-                    "source": "Static Tool (Bandit)",
-                    "confidence": "High"
+                    "source": f"Bandit {item.get('test_id', '')}".strip() or "Bandit Security"
                 })
     except Exception:
         pass
@@ -130,8 +139,7 @@ def run_ast_quality_checks(code: str, filename: str) -> list:
                         "file": filename,
                         "line": getattr(node, "lineno", 1),
                         "message": "Bare 'except:' clause caught all exceptions including system exits",
-                        "source": "Static Tool (AST Analysis)",
-                        "confidence": "High"
+                        "source": "AST Linter"
                     })
                 elif len(node.body) == 1 and isinstance(node.body[0], ast.Pass):
                     issues.append({
@@ -141,8 +149,7 @@ def run_ast_quality_checks(code: str, filename: str) -> list:
                         "file": filename,
                         "line": getattr(node, "lineno", 1),
                         "message": "Silenced exception: 'except' block with only 'pass' statement",
-                        "source": "Static Tool (AST Analysis)",
-                        "confidence": "High"
+                        "source": "AST Linter"
                     })
 
             # 2. Mutable default argument in function definitions
@@ -156,8 +163,7 @@ def run_ast_quality_checks(code: str, filename: str) -> list:
                             "file": filename,
                             "line": getattr(node, "lineno", 1),
                             "message": f"Mutable default argument in '{node.name}()' leads to unexpected state retention",
-                            "source": "Static Tool (AST Analysis)",
-                            "confidence": "High"
+                            "source": "AST Linter"
                         })
                 
                 # Check for overly complex or long functions (> 35 lines)
@@ -170,8 +176,7 @@ def run_ast_quality_checks(code: str, filename: str) -> list:
                         "file": filename,
                         "line": node.lineno,
                         "message": f"High function complexity: '{node.name}()' exceeds 35 lines; consider refactoring",
-                        "source": "Static Tool (AST Analysis)",
-                        "confidence": "Medium"
+                        "source": "AST Linter"
                     })
 
             # 3. Wildcard imports
@@ -183,8 +188,7 @@ def run_ast_quality_checks(code: str, filename: str) -> list:
                     "file": filename,
                     "line": getattr(node, "lineno", 1),
                     "message": f"Wildcard import 'from {node.module} import *' pollutes the global namespace",
-                    "source": "Static Tool (AST Analysis)",
-                    "confidence": "High"
+                    "source": "AST Linter"
                 })
 
     except Exception:
@@ -218,26 +222,37 @@ def run_multilingual_regex_patterns(code: str, filename: str) -> list:
                 "line": line_idx,
                 "message": "Hardcoded secret or credential token detected in source code",
                 "cwe": "798",
-                "source": "Static Pattern Analyzer",
-                "confidence": "High"
+                "source": "Secret Scanner (CWE-798)"
             })
 
-        # 2. JavaScript / TypeScript / PHP eval() or Function constructor
-        if suffix in [".js", ".jsx", ".ts", ".tsx", ".php"] and re.search(r'\beval\s*\(', clean_line):
+        # 2. JavaScript / TypeScript / PHP eval() or Function constructor (CWE-95)
+        if suffix in [".js", ".jsx", ".ts", ".tsx", ".php"] and re.search(r'\b(?:eval|new\s+Function)\s*\(', clean_line):
             issues.append({
                 "id": f"sec_{len(issues)+1}",
                 "type": "security",
                 "severity": "high",
                 "file": filename,
                 "line": line_idx,
-                "message": "Unsafe eval() usage: processes arbitrary expressions without sanitization",
+                "message": "Unsafe dynamic code execution: arbitrary expression evaluation",
                 "cwe": "95",
-                "source": "Static Pattern Analyzer",
-                "confidence": "High"
+                "source": "Security Linter (CWE-95)"
             })
 
-        # 3. SQL string concatenation across languages
-        if re.search(r'(?:select\s+.+\s+from|insert\s+into|delete\s+from)\s*.*\+\s*[A-Za-z0-9_]+', clean_line, re.IGNORECASE):
+        # 3. Cross-Site Scripting (XSS) in JS/TS/HTML (CWE-79)
+        if suffix in [".js", ".jsx", ".ts", ".tsx", ".html"] and re.search(r'\.(?:innerHTML|outerHTML)\s*=\s*[^"\'`]|document\.write\s*\(', clean_line):
+            issues.append({
+                "id": f"sec_{len(issues)+1}",
+                "type": "security",
+                "severity": "high",
+                "file": filename,
+                "line": line_idx,
+                "message": "Potential Cross-Site Scripting (DOM XSS): unescaped assignment to innerHTML/document.write",
+                "cwe": "79",
+                "source": "DOM Security (CWE-79)"
+            })
+
+        # 4. SQL string concatenation across languages (CWE-89)
+        if re.search(r'(?:select\s+.+\s+from|insert\s+into|delete\s+from|update\s+.+\s+set)\s*.*\+\s*[A-Za-z0-9_]+', clean_line, re.IGNORECASE):
             issues.append({
                 "id": f"sec_{len(issues)+1}",
                 "type": "security",
@@ -246,8 +261,35 @@ def run_multilingual_regex_patterns(code: str, filename: str) -> list:
                 "line": line_idx,
                 "message": "Potential SQL Injection: direct string concatenation in SQL query",
                 "cwe": "89",
-                "source": "Static Pattern Analyzer",
-                "confidence": "High"
+                "source": "SQLi Auditor (CWE-89)"
+            })
+
+        # 5. OS Command Injection across JS/TS, Java, Go, C++, PHP (CWE-78)
+        if re.search(r'(?:child_process\.(?:exec|execSync)|Runtime\.getRuntime\(\)\.exec|system\(|popen\(|exec\.Command\()\s*\(?[^)]*\+', clean_line):
+            issues.append({
+                "id": f"sec_{len(issues)+1}",
+                "type": "security",
+                "severity": "high",
+                "file": filename,
+                "line": line_idx,
+                "message": "Potential OS Command Injection: unsanitized command string passed to system process",
+                "cwe": "78",
+                "source": "Command Injection Auditor"
+            })
+
+        # 6. Leftover debugging statements in production (Quality / Code Smell)
+        if (suffix in [".js", ".jsx", ".ts", ".tsx"] and re.search(r'\bconsole\.(?:log|debug|warn)\s*\(', clean_line)) or \
+           (suffix in [".java", ".kt"] and re.search(r'\bSystem\.out\.print(?:ln)?\s*\(', clean_line)) or \
+           (suffix in [".php"] and re.search(r'\b(?:var_dump|print_r)\s*\(', clean_line)) or \
+           (suffix in [".go"] and re.search(r'\bfmt\.Print(?:ln|f)?\s*\(', clean_line)):
+            issues.append({
+                "id": f"qual_{len(issues)+1}",
+                "type": "quality",
+                "severity": "low",
+                "file": filename,
+                "line": line_idx,
+                "message": f"Leftover debug statement '{clean_line[:35]}...' should be removed in production code",
+                "source": "Quality Linter"
             })
 
     return issues
@@ -259,17 +301,23 @@ def analyze_files(files: list) -> list:
         filename = file.get("filename", "unknown.py")
         patch = file.get("patch", "")
 
-        code = extract_added_code(patch)
+        # Prioritize full authentic source code from PR head commit
+        content = file.get("content", "")
+        if content and content.strip():
+            code = content
+            is_fragment = False
+        else:
+            code = extract_added_code(patch)
+            is_fragment = True
+
         if not code or not code.strip():
-            code = file.get("content", "")
-            if not code or not code.strip():
-                continue
+            continue
 
         suffix = Path(filename).suffix.lower()
 
         # Python files -> Pyflakes, Bandit, AST
         if suffix in [".py", ".pyw"]:
-            pyflakes_issues = run_pyflakes(code, filename)
+            pyflakes_issues = run_pyflakes(code, filename, is_fragment=is_fragment)
             bandit_issues = run_bandit(code, filename)
             quality_issues = run_ast_quality_checks(code, filename)
             all_issues.extend(pyflakes_issues)
