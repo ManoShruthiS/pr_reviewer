@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border-bottom: 2px solid #3b82f6;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    color: #f8fafc;
+}
+
+header p {
+    color: #94a3b8;
+    margin-top: 5px;
+}
+
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.input-section input {
+    flex: 1;
+    padding: 14px 18px;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    background: #1e293b;
+    color: #e2e8f0;
+    font-size: 1rem;
+}
+
+.input-section input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.input-section button {
+    padding: 14px 32px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.input-section button:hover {
+    background: #2563eb;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.risk-section {
+    text-align: center;
+    padding: 30px;
+    background: #1e293b;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.risk-section h2 {
+    color: #94a3b8;
+    margin-bottom: 15px;
+}
+
+.risk-score {
+    font-size: 5rem;
+    font-weight: bold;
+}
+
+.risk-level {
+    font-size: 1.3rem;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.risk-low { color: #22c55e; }
+.risk-medium { color: #eab308; }
+.risk-high { color: #f97316; }
+.risk-critical { color: #ef4444; }
+
+.charts-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.chart-container {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.chart-container h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #94a3b8;
+}
+
+.issues-section {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.issues-section h2 {
+    margin-bottom: 15px;
+    color: #94a3b8;
+}
+
+.issue-card {
+    background: #334155;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-left: 4px solid;
+}
+
+.issue-card.severity-high { border-left-color: #ef4444; }
+.issue-card.severity-medium { border-left-color: #eab308; }
+.issue-card.severity-low { border-left-color: #22c55e; }
+
+.issue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.issue-type {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: #1e293b;
+    text-transform: uppercase;
+}
+
+.type-security { color: #ef4444; }
+.type-bug { color: #eab308; }
+.type-quality { color: #3b82f6; }
+
+.issue-severity {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.severity-high { color: #ef4444; }
+.severity-medium { color: #eab308; }
+.severity-low { color: #22c55e; }
+
+.issue-message {
+    margin-bottom: 8px;
+    color: #f1f5f9;
+}
+
+.issue-explanation {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.issue-fix {
+    background: #0f172a;
+    padding: 10px;
+    border-radius: 6px;
+    font-family: monospace;
+    color: #22c55e;
+    font-size: 0.85rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #334155;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+#loading {
+    text-align: center;
+    padding: 60px;
+    color: #94a3b8;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #475569;
+    font-size: 0.85rem;
+    margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+    .input-section {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+PyGithub
+pyflakes
+bandit
+openai
+sqlalchemy
+python-dotenv
