@@ -1,12 +1,29 @@
+// ==============================================================================
+// FILE: script.js
+// PURPOSE: The interactive brain of the frontend website (user interface).
+//
+// HOW TO THINK OF THIS FILE (SIMPLE ANALOGY):
+// If HTML is the skeleton (bones) and CSS is the clothes (styling),
+// then JavaScript is the muscles and brain!
+// 1. When you click the "Analyze" button, this file wakes up.
+// 2. It takes the GitHub link you typed and sends it to our Python backend server.
+// 3. While waiting, it turns on loading spinners and status indicators.
+// 4. When the Python server replies with the results, this file fills in:
+//    - The animated risk score gauge (0 to 100)
+//    - The bug cards, security warnings, and suggested code fixes
+//    - The 1-page printable audit report
+// ==============================================================================
+
 'use strict';
 
-// Base URL for FastAPI backend (relative if served directly from FastAPI, otherwise localhost:8000)
+// Base URL for FastAPI backend (connects to http://localhost:8000 when testing)
 const API_BASE = window.location.origin.includes('8000') ? '' : 'http://localhost:8000';
 
-let currentReview = null;
-let toastTimer = null;
-let reviewSequence = 0;
+let currentReview = null;    // Remembers the latest review data in memory
+let toastTimer = null;       // Timer for notification popups
+let reviewSequence = 0;      // Counter for reviews performed
 
+// Shortcut helpers: '$' selects one element on the page, '$$' selects multiple elements
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 

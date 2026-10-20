@@ -46,25 +46,56 @@ pr_reviewer/
 5. Risk score (0–100) is calculated
 6. Results displayed on a web dashboard
 
-## Setup
+## 🚀 Quick Start Guide (How to Run on Any Laptop)
 
+### Prerequisites:
+- **Python 3.10+** installed on the computer ([python.org](https://www.python.org/downloads/)). *Make sure to check "Add Python to PATH" during installation.*
+
+---
+
+### Step 1: Clone or Download the Project
+```bash
+git clone https://github.com/ManoShruthiS/pr_reviewer.git
+cd pr_reviewer
+```
+*(Or click **Code -> Download ZIP** on GitHub, and extract the folder).*
+
+---
+
+### Step 2: Install Dependencies (One-time only)
+Open Command Prompt or Terminal inside the `pr_reviewer` folder and run:
 ```bash
 pip install -r requirements.txt
 ```
 
-Create a `.env` file:
-```
-GITHUB_TOKEN=your_github_token
-OPENAI_API_KEY=your_openai_key
-```
+---
 
-Run the backend:
+### Step 3: Run the Application
+
+#### ⚡ Option A (Easiest — 1-Click for Windows):
+Simply double-click the **`run_project.bat`** file in the root directory.
+> It will automatically start the server and open the web dashboard in your browser!
+
+#### 💻 Option B (Command Line):
 ```bash
 cd backend
-uvicorn main:app --reload
+python -m uvicorn main:app --reload
+```
+Then open your browser and navigate to:
+```
+http://127.0.0.1:8000
 ```
 
-Open `frontend/index.html` in a browser.
+---
+
+### Step 4: Optional Configuration (`.env`)
+The system works **100% out-of-the-box in free offline mode** without requiring any keys.
+If you have personal API tokens for higher rate limits or cloud AI:
+1. Create a file named `.env` inside the `backend/` folder:
+```ini
+GITHUB_TOKEN=your_github_token_here
+OPENAI_API_KEY=your_openai_key_here
+```
 
 ## Team
 
