@@ -14,6 +14,7 @@ from risk_scorer import calculate_risk_score
 from database import init_db, save_review, get_all_reviews, get_review_by_id
 from config import GITHUB_TOKEN, OPENAI_API_KEY
 from language_detector import analyze_pr_coverage
+from audit_logger import log_review_event, get_recent_audit_logs, get_audit_metrics
 
 app = FastAPI(
     title="AI-Powered Intelligent Code Review and Risk Analysis System",
@@ -67,6 +68,16 @@ def review_pr(request: ReviewRequest):
             pr_title=pr_data.get("title", "GitHub Pull Request"),
             risk_score=risk_score,
             issues_json=json.dumps(issues)
+        )
+
+        # 6. Record review in structured audit trail
+        critical_count = sum(1 for item in issues if item.get("severity") in ("CRITICAL", "HIGH"))
+        log_review_event(
+            pr_url=pr_url,
+            risk_score=risk_score,
+            issue_count=len(issues),
+            critical_count=critical_count,
+            coverage_summary=coverage_data
         )
 
         return {
@@ -138,6 +149,15 @@ def get_status():
         "security_scanner": "Bandit v1.9.4",
         "bug_detector": "Pyflakes v4.0.3",
         "database": "In-Memory Session (Ephemeral)"
+    }
+
+
+@app.get("/api/audit")
+def get_audit_trail():
+    """Retrieve recent PR inspection audit trail logs."""
+    return {
+        "metrics": get_audit_metrics(),
+        "recent_logs": get_recent_audit_logs(limit=25)
     }
 
 
