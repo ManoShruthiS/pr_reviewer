@@ -549,18 +549,42 @@ body {
 
 .hero-headline {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 800;
-  color: var(--text-white);
   letter-spacing: -0.6px;
   line-height: 1.25;
   margin-bottom: 8px;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #ffffff 22%,
+    #cbd5e1 45%,
+    #ffffff 55%,
+    #94a3b8 78%,
+    #64748b 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #fff;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
 .gradient-text {
-  color: var(--gh-blue);
-  background: none;
-  -webkit-text-fill-color: initial;
+  background: linear-gradient(
+    135deg,
+    #e0f2fe 0%,
+    #7dd3fc 25%,
+    #38bdf8 48%,
+    #e0f2fe 65%,
+    #0284c7 90%,
+    #0369a1 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #38bdf8;
+  filter: drop-shadow(0 2px 14px rgba(56, 189, 248, 0.35));
 }
 
 .hero-subtext {
