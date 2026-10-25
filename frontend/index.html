@@ -69,27 +69,38 @@
     .pulse-delay-2 { animation-delay: 1.2s; }
     @keyframes beamPulse { 0% { left: -30%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
 
-    /* Magic UI: Continuous Feature Marquee */
-    .magic-marquee-wrapper {
-      overflow: hidden !important; margin-top: 24px !important; width: 100% !important;
-      mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent) !important;
-      -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent) !important;
+    /* Capability Badges Grid: Fully visible, responsive, no fade or clipping */
+    .capabilities-badges-grid {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 8px !important;
+      margin-top: 26px !important;
+      max-width: 680px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
     }
-    .marquee-track {
-      display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-      gap: 10px !important; width: max-content !important; white-space: nowrap !important;
-      animation: marqueeScroll 26s linear infinite !important;
-    }
-    .marquee-track:hover { animation-play-state: paused !important; }
-    .marquee-badge {
-      display: inline-flex !important; align-items: center !important; gap: 6px !important;
-      padding: 6px 14px !important; border-radius: 99px !important; background: rgba(22, 27, 34, 0.85) !important;
-      border: 1px solid #21262d !important; font-size: 11px !important; font-weight: 600 !important;
-      color: #848d97 !important; white-space: nowrap !important; flex-shrink: 0 !important;
+    .capability-pill {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 6px 13px !important;
+      border-radius: 99px !important;
+      background: rgba(22, 27, 34, 0.95) !important;
+      border: 1px solid #30363d !important;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      color: #c9d1d9 !important;
+      white-space: nowrap !important;
       transition: all 0.2s ease !important;
     }
-    .marquee-badge:hover { background: #21262d !important; border-color: rgba(88, 166, 255, 0.4) !important; color: #fff !important; transform: translateY(-2px) !important; }
-    @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .capability-pill:hover {
+      background: #21262d !important;
+      border-color: rgba(88, 166, 255, 0.45) !important;
+      color: #fff !important;
+      transform: translateY(-2px) !important;
+    }
 
     /* Magic UI: Confetti Canvas */
     .confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
@@ -265,7 +276,7 @@
               />
               <button class="btn-primary-review" type="submit">
                 <span class="btn-sparkle">✦</span>
-                <span class="btn-label">Run Analysis</span>
+                <span class="btn-label">Ask PR-Doc to Review</span>
                 <span class="btn-arrow">→</span>
               </button>
             </div>
@@ -311,9 +322,9 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
-            <h3 class="ready-title">Awaiting Pull Request for Inspection</h3>
+            <h3 class="ready-title">PR-Doc Is Ready to Examine Your Pull Request</h3>
             <p class="ready-text">
-              Enter any public GitHub pull request URL above and click <strong>Run Analysis</strong>. PR-Doc will connect directly to GitHub, parse the changed files with static AST analyzers, detect security vulnerabilities, and evaluate risk.
+              Enter any public GitHub pull request URL above and click <strong>Ask PR-Doc to Review</strong>. PR-Doc will connect directly to GitHub, parse the changed files with static AST analyzers, detect security vulnerabilities, and evaluate risk.
             </p>
 
             <!-- Magic UI: Animated Beam Pipeline -->
@@ -347,27 +358,16 @@
               </div>
             </div>
 
-            <!-- Magic UI: Continuous Feature Marquee -->
-            <div class="magic-marquee-wrapper" aria-hidden="true">
-              <div class="marquee-track">
-                <span class="marquee-badge">🐍 Python AST Parser</span>
-                <span class="marquee-badge">🛡️ Bandit Security Scanner</span>
-                <span class="marquee-badge">⚡ Cyclomatic Complexity</span>
-                <span class="marquee-badge">🔑 Secret &amp; API Key Leaks</span>
-                <span class="marquee-badge">🔀 Git Patch Parser</span>
-                <span class="marquee-badge">🧠 Gemini AI Synthesis</span>
-                <span class="marquee-badge">📊 OWASP Top 10 Rules</span>
-                <span class="marquee-badge">🚦 Automated Merge Gate</span>
-                <!-- Loop duplicates -->
-                <span class="marquee-badge">🐍 Python AST Parser</span>
-                <span class="marquee-badge">🛡️ Bandit Security Scanner</span>
-                <span class="marquee-badge">⚡ Cyclomatic Complexity</span>
-                <span class="marquee-badge">🔑 Secret &amp; API Key Leaks</span>
-                <span class="marquee-badge">🔀 Git Patch Parser</span>
-                <span class="marquee-badge">🧠 Gemini AI Synthesis</span>
-                <span class="marquee-badge">📊 OWASP Top 10 Rules</span>
-                <span class="marquee-badge">🚦 Automated Merge Gate</span>
-              </div>
+            <!-- Capability Highlights: Clean, fully visible, responsive grid -->
+            <div class="capabilities-badges-grid" aria-label="PR-Doc Inspection Capabilities">
+              <span class="capability-pill">🐍 Python AST Parser</span>
+              <span class="capability-pill">🛡️ Bandit Security Scanner</span>
+              <span class="capability-pill">⚡ Cyclomatic Complexity</span>
+              <span class="capability-pill">🔑 Secret &amp; Key Leaks</span>
+              <span class="capability-pill">🔀 Git Patch Parser</span>
+              <span class="capability-pill">🧠 AI Explanation Layer</span>
+              <span class="capability-pill">📊 OWASP Top 10 Rules</span>
+              <span class="capability-pill">🚦 Automated Merge Gate</span>
             </div>
           </div>
         </section>

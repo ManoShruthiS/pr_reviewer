@@ -441,7 +441,7 @@ async function performReview(url) {
       if (results && !results.hidden) results.style.opacity = '1';
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span class="btn-sparkle">✦</span> Run Analysis <span class="btn-arrow">→</span>';
+        submitBtn.innerHTML = '<span class="btn-sparkle">✦</span> Ask PR-Doc to Review <span class="btn-arrow">→</span>';
       }
     }
   }
