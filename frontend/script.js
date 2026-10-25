@@ -80,6 +80,28 @@ function countBy(key, values = []) {
 
 let scoreAnimationId = null;
 
+// Magic UI: Number Ticker with cubic ease-out
+function animateNumberTicker(element, target, duration = 900) {
+  if (!element) return;
+  const start = parseInt(element.textContent, 10) || 0;
+  if (start === target) return;
+  const startTime = performance.now();
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (target - start) * ease);
+    element.textContent = current;
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      element.textContent = target;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
 function animateScoreCounter(targetScore, color) {
   const scoreEl = $('#riskScore');
   if (!scoreEl) return;
@@ -138,9 +160,9 @@ function updateMetrics(issues = []) {
   const qualEl = $('#qualityCount');
   const headingEl = $('#issueHeadingCount');
 
-  if (secEl) secEl.textContent = types.security || 0;
-  if (bugEl) bugEl.textContent = types.bug || 0;
-  if (qualEl) qualEl.textContent = types.quality || 0;
+  if (secEl) animateNumberTicker(secEl, types.security || 0);
+  if (bugEl) animateNumberTicker(bugEl, types.bug || 0);
+  if (qualEl) animateNumberTicker(qualEl, types.quality || 0);
   if (headingEl) headingEl.textContent = `${issues.length} Issues Flagged`;
 }
 
@@ -252,9 +274,9 @@ function renderCoverage(coverage) {
   const toolChips = $('#toolChips');
   const manifestBody = $('#fileManifestBody');
 
-  if (analyzedCount) analyzedCount.textContent = coverage.analyzed_files ?? 0;
-  if (skippedCount) skippedCount.textContent = coverage.skipped_files ?? 0;
-  if (langCount) langCount.textContent = (coverage.languages_detected || []).length;
+  if (analyzedCount) animateNumberTicker(analyzedCount, coverage.analyzed_files ?? 0);
+  if (skippedCount) animateNumberTicker(skippedCount, coverage.skipped_files ?? 0);
+  if (langCount) animateNumberTicker(langCount, (coverage.languages_detected || []).length);
 
   if (ratePill) {
     const rate = coverage.coverage_percentage ?? 100;
@@ -309,6 +331,11 @@ function renderReview(reviewData) {
   updateMetrics(issues);
   updateSummary(issues, repo, prTitle);
   renderCoverage(reviewData.coverage);
+
+  // Magic UI Confetti on Low Risk / Clean merge safety
+  if (score <= 35) {
+    window.setTimeout(() => fireMagicConfetti(), 500);
+  }
 
   const titleEl = $('#resultsHeadingTitle');
   if (titleEl) titleEl.textContent = prTitle;
@@ -574,4 +601,127 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // =========================================================================
+  // Magic UI Components Suite Runtime
+  // =========================================================================
+
+  // 1. Magic UI: Word Rotate Component
+  function initWordRotate() {
+    const container = $('#heroWordRotate');
+    if (!container) return;
+    const items = $$('.word-rotate-item', container);
+    if (items.length <= 1) return;
+
+    let currentIndex = 0;
+    setInterval(() => {
+      const prevIndex = currentIndex;
+      currentIndex = (currentIndex + 1) % items.length;
+
+      items[prevIndex].classList.remove('active');
+      items[prevIndex].classList.add('exit');
+
+      window.setTimeout(() => {
+        items[prevIndex].classList.remove('exit');
+      }, 450);
+
+      items[currentIndex].classList.add('active');
+    }, 2800);
+  }
+
+  // 2. Magic UI: Scroll Progress
+  function initScrollProgress() {
+    const bar = $('#scrollProgress');
+    if (!bar) return;
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      bar.style.width = `${progress}%`;
+    }, { passive: true });
+  }
+
+  // 3. Magic UI: Magic Card Glare / Mouse Spotlight
+  function initMagicCardSpotlight() {
+    const cards = $$('.kpi-card, .ai-summary-card, .coverage-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  }
+
+  // Initialize Magic UI Interactive Suite
+  initWordRotate();
+  initScrollProgress();
+  initMagicCardSpotlight();
 });
+
+// Magic UI: Lightweight Canvas Confetti
+function fireMagicConfetti() {
+  const canvas = $('#confettiCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const colors = ['#2f81f7', '#3fb950', '#a855f7', '#58a6ff', '#e3b341', '#f0883e'];
+  const count = 90;
+
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: window.innerWidth * (0.35 + Math.random() * 0.3),
+      y: window.innerHeight * 0.45,
+      vx: (Math.random() - 0.5) * 16,
+      vy: (Math.random() - 0.9) * 18,
+      size: Math.random() * 7 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      rotationSpeed: (Math.random() - 0.5) * 12,
+      opacity: 1,
+      gravity: 0.35
+    });
+  }
+
+  let animationFrame;
+  const startTime = performance.now();
+
+  function render(now) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = 0;
+
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.98;
+      p.rotation += p.rotationSpeed;
+      p.opacity = Math.max(0, 1 - (now - startTime) / 2800);
+
+      if (p.opacity > 0 && p.y < canvas.height + 20) {
+        alive++;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.opacity;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+        ctx.restore();
+      }
+    }
+
+    if (alive > 0) {
+      animationFrame = requestAnimationFrame(render);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      cancelAnimationFrame(animationFrame);
+    }
+  }
+
+  animationFrame = requestAnimationFrame(render);
+}
