@@ -108,6 +108,27 @@
           <p class="url-error" id="urlError" role="alert" hidden>
             ⚠️ Please enter a valid GitHub pull request URL (e.g., https://github.com/owner/repo/pull/123).
           </p>
+
+          <!-- Real Error Alert Banner (Hidden by default) -->
+          <div class="review-error-card" id="reviewError" role="alert" hidden>
+            <div class="error-icon">⚠️</div>
+            <div class="error-content">
+              <strong class="error-title" id="reviewErrorTitle">Analysis Failed</strong>
+              <p class="error-msg" id="reviewErrorMsg">Unable to fetch pull request from GitHub.</p>
+            </div>
+            <button class="error-dismiss" id="dismissErrorBtn" type="button" aria-label="Dismiss error">✕</button>
+          </div>
+
+          <!-- Quick Test with Real Public PRs -->
+          <div class="quick-samples-strip">
+            <span class="samples-label">Live Test Examples:</span>
+            <button type="button" class="sample-chip" data-url="https://github.com/psf/requests/pull/7628" title="Click to test live on real public PR">
+              <span class="sample-icon">⚡</span> psf/requests #7628
+            </button>
+            <button type="button" class="sample-chip" data-url="https://github.com/pallets/flask/pull/5512" title="Click to test live on real public PR">
+              <span class="sample-icon">⚡</span> pallets/flask #5512
+            </button>
+          </div>
         </section>
 
         <!-- Skeleton Loading State -->
@@ -126,8 +147,39 @@
           </div>
         </section>
 
-        <!-- Analysis Results Dashboard -->
-        <section class="results-dashboard" id="results">
+        <!-- Ready State Card (Visible when awaiting PR analysis) -->
+        <section class="ready-state-card" id="readyPrompt">
+          <div class="ready-card-content">
+            <div class="ready-icon-halo">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h3 class="ready-title">Awaiting Pull Request for Inspection</h3>
+            <p class="ready-text">
+              Enter any public GitHub pull request URL above and click <strong>Run Analysis</strong>, or choose a live test example. PR-Doc will connect directly to GitHub, parse the changed files with static AST analyzers, detect security vulnerabilities, and evaluate risk.
+            </p>
+            <div class="ready-features-grid">
+              <div class="ready-feat-item">
+                <span class="feat-dot green"></span>
+                <span>Live GitHub Diff Fetching</span>
+              </div>
+              <div class="ready-feat-item">
+                <span class="feat-dot blue"></span>
+                <span>Static Security &amp; Bug Analysis</span>
+              </div>
+              <div class="ready-feat-item">
+                <span class="feat-dot purple"></span>
+                <span>AI Risk Scoring &amp; Patch Synthesis</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Analysis Results Dashboard (Hidden until real analysis is performed) -->
+        <section class="results-dashboard" id="results" hidden>
           <!-- Results Section Header -->
           <div class="results-banner">
             <span class="banner-kicker">EXECUTIVE SUMMARY</span>
@@ -143,19 +195,19 @@
                 <span class="kpi-info-icon" title="Risk Score calculated on a 0–100 scale from issue severity and category weights">ⓘ</span>
               </div>
               <div class="gauge-compact-wrap">
-                <div class="gauge-container" id="riskGauge" data-score="72">
+                <div class="gauge-container" id="riskGauge" data-score="0">
                   <svg class="gauge-svg" viewBox="0 0 240 150">
                     <path class="gauge-track" d="M 30 128 A 90 90 0 0 1 210 128" />
                     <path class="gauge-value" id="gaugeArc" d="M 30 128 A 90 90 0 0 1 210 128" />
                   </svg>
                   <div class="gauge-text-overlay">
-                    <div class="gauge-number" id="riskScore">72</div>
+                    <div class="gauge-number" id="riskScore">0</div>
                     <div class="gauge-scale">/ 100</div>
                   </div>
                 </div>
                 <div class="risk-verdict-wrap">
-                  <div class="risk-badge-pill high" id="riskLevel">HIGH RISK</div>
-                  <p class="risk-verdict-caption" id="riskCaption">Several critical vulnerabilities need resolution before merging.</p>
+                  <div class="risk-badge-pill" id="riskLevel">—</div>
+                  <p class="risk-verdict-caption" id="riskCaption">Awaiting analysis metrics.</p>
                 </div>
               </div>
             </article>
@@ -167,7 +219,7 @@
                 <span class="metric-label">Security Flaws</span>
               </div>
               <div class="metric-value-wrap">
-                <span class="metric-number" id="securityCount">2</span>
+                <span class="metric-number" id="securityCount">0</span>
                 <span class="metric-unit">CVE / CWEs</span>
               </div>
               <div class="metric-bar-bg"><div class="metric-bar-fill bar-security"></div></div>
@@ -180,7 +232,7 @@
                 <span class="metric-label">Syntax &amp; Bugs</span>
               </div>
               <div class="metric-value-wrap">
-                <span class="metric-number" id="bugCount">2</span>
+                <span class="metric-number" id="bugCount">0</span>
                 <span class="metric-unit">Exceptions</span>
               </div>
               <div class="metric-bar-bg"><div class="metric-bar-fill bar-bug"></div></div>
@@ -193,7 +245,7 @@
                 <span class="metric-label">Code Quality</span>
               </div>
               <div class="metric-value-wrap">
-                <span class="metric-number" id="qualityCount">2</span>
+                <span class="metric-number" id="qualityCount">0</span>
                 <span class="metric-unit">Code Smells</span>
               </div>
               <div class="metric-bar-bg"><div class="metric-bar-fill bar-quality"></div></div>
@@ -209,7 +261,7 @@
               <span class="ai-model-tag" id="aiModelBadge">GPT-4o-mini &amp; Expert Heuristics</span>
             </div>
             <div class="ai-summary-body" id="aiSummary">
-              The pull request contains high-risk security flaws and runtime bugs. The most critical finding is a hardcoded secret in <code>auth_service.py</code>. Apply suggested security remediation before integration.
+              Run an analysis on any public pull request to view automated risk evaluation and vulnerability diagnosis.
             </div>
             <div class="ai-summary-footer">
               <span class="verified-dot"></span> Automated Security Decision Support System
@@ -230,7 +282,7 @@
                 </div>
                 <div class="coverage-stats-cluster">
                   <div class="stat-box">
-                    <span class="stat-number" id="coverageAnalyzedCount">5</span>
+                    <span class="stat-number" id="coverageAnalyzedCount">0</span>
                     <span class="stat-label">Files Analyzed</span>
                   </div>
                   <div class="stat-box">
@@ -238,7 +290,7 @@
                     <span class="stat-label">Files Skipped</span>
                   </div>
                   <div class="stat-box">
-                    <span class="stat-number" id="coverageLangCount">2</span>
+                    <span class="stat-number" id="coverageLangCount">0</span>
                     <span class="stat-label">Languages</span>
                   </div>
                 </div>

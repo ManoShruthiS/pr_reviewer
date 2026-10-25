@@ -95,16 +95,6 @@ DEMO_PRS = {
 
 
 def fetch_pr_diff(pr_url: str) -> dict:
-    url_lower = pr_url.lower()
-
-    # Check for demo / sample trigger URLs
-    if "demo" in url_lower or "sample" in url_lower or "example" in url_lower:
-        if "clean" in url_lower or "low" in url_lower:
-            return DEMO_PRS["clean"]
-        if "bug" in url_lower or "medium" in url_lower:
-            return DEMO_PRS["bugs"]
-        return DEMO_PRS["security"]
-
     # Parse standard GitHub PR URL: https://github.com/owner/repo/pull/123
     try:
         parts = pr_url.strip().strip("/").split("/")
@@ -145,9 +135,13 @@ def fetch_pr_diff(pr_url: str) -> dict:
         }
 
     except Exception as e:
-        # If GitHub API fails (due to rate limits, no internet, private repo, or bad URL),
-        # return a realistic demo PR with a descriptive note instead of crashing
-        fallback = DEMO_PRS["security"].copy()
-        fallback["title"] = f"{DEMO_PRS['security']['title']} (Offline/Sample Mode)"
-        fallback["note"] = f"Live GitHub fetch notice: {str(e)}"
-        return fallback
+        err_str = str(e)
+        if "404" in err_str:
+            raise ValueError(f"GitHub Pull Request not found (404). Please ensure the repository is public and PR #{pr_number} exists.")
+        elif "403" in err_str or "rate limit" in err_str.lower():
+            raise ValueError("GitHub API rate limit exceeded (60 requests/hr for unauthenticated requests). Please configure GITHUB_TOKEN in backend/.env for up to 5,000 requests/hr.")
+        elif "connection" in err_str.lower() or "resolve" in err_str.lower():
+            raise ValueError("Network error: Unable to connect to GitHub API. Please check your internet connection.")
+        else:
+            raise ValueError(f"GitHub PR fetch failed: {err_str}")
+

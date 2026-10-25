@@ -81,6 +81,8 @@ def review_pr(request: ReviewRequest):
             "fileCount": len(files),
             "note": pr_data.get("note", "")
         }
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Review failed: {str(e)}")
 
