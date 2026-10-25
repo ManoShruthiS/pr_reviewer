@@ -134,10 +134,10 @@ function showToast(message) {
 }
 
 function getRisk(score) {
-  if (score <= 25) return { name: 'LOW RISK', className: 'low', color: '#10b981', caption: 'Only minor stylistic observations. Safe to merge with standard approvals.' };
-  if (score <= 50) return { name: 'MEDIUM RISK', className: 'medium', color: '#f59e0b', caption: 'Moderate bug or maintainability risks. Resolve findings prior to release.' };
-  if (score <= 75) return { name: 'HIGH RISK', className: 'high', color: '#fb7185', caption: 'High-severity vulnerabilities detected. Fix critical findings before merge.' };
-  return { name: 'CRITICAL RISK', className: 'critical', color: '#f43f5e', caption: 'Block merge immediately! Remote code execution or hardcoded secrets found.' };
+  if (score <= 25) return { name: 'LOW RISK', className: 'low', color: '#3fb950', caption: 'Only minor stylistic observations. Safe to merge with standard approvals.' };
+  if (score <= 50) return { name: 'MEDIUM RISK', className: 'medium', color: '#d29922', caption: 'Moderate bug or maintainability risks. Resolve findings prior to release.' };
+  if (score <= 75) return { name: 'HIGH RISK', className: 'high', color: '#f85149', caption: 'High-severity vulnerabilities detected. Fix critical findings before merge.' };
+  return { name: 'CRITICAL RISK', className: 'critical', color: '#f85149', caption: 'Block merge immediately! Remote code execution or hardcoded secrets found.' };
 }
 
 function validatePRUrl(value) {
