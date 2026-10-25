@@ -372,6 +372,31 @@ body {
   pointer-events: none;
 }
 
+/* Futuristic Laser Scanning Beam Animation */
+.hero-scanner-section.scanning-active {
+  border-color: rgba(190, 24, 93, 0.7);
+  box-shadow: 0 0 30px rgba(190, 24, 93, 0.25), 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+.hero-scanner-section.scanning-active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #be185d, #38bdf8, #be185d, transparent);
+  box-shadow: 0 0 15px #be185d, 0 0 25px #38bdf8;
+  animation: scanSweep 1.6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes scanSweep {
+  0% { top: 0%; opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0.6; }
+}
+
 .badge-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -843,7 +868,7 @@ body {
   stroke-dasharray: 282.7;
   stroke-dashoffset: 79;
   filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.5));
-  transition: stroke-dashoffset 0.8s ease, stroke 0.4s ease;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.5s ease;
 }
 
 .gauge-text-overlay {
@@ -1206,14 +1231,26 @@ body {
   border-radius: 14px;
   padding: 18px 20px;
   position: relative;
-  transition: all 0.25s ease;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   box-shadow: var(--shadow-card);
+  animation: cardEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .issue-card:hover {
-  border-color: rgba(190, 24, 93, 0.45);
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
+  border-color: rgba(190, 24, 93, 0.5);
+  box-shadow: 0 12px 30px -8px rgba(131, 24, 67, 0.35);
+  transform: translateY(-3px);
 }
 
 .issue-card.severity-high {
@@ -1364,12 +1401,27 @@ body {
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .copy-button:hover {
   background: var(--burgundy-vibrant);
   color: #fff;
+  transform: translateY(-1px);
+}
+
+.copy-button.copied {
+  background: rgba(16, 185, 129, 0.25) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+  animation: copyPulse 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes copyPulse {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
 }
 
 .empty-feed-card {

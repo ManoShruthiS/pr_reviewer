@@ -169,6 +169,35 @@ function countBy(key, values = []) {
   }, {});
 }
 
+let scoreAnimationId = null;
+
+function animateScoreCounter(targetScore, color) {
+  const scoreEl = $('#riskScore');
+  if (!scoreEl) return;
+  if (scoreAnimationId) cancelAnimationFrame(scoreAnimationId);
+
+  const startScore = parseInt(scoreEl.textContent, 10) || 0;
+  const duration = 1200;
+  const startTime = performance.now();
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Smooth cubic-out easing
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(startScore + (targetScore - startScore) * ease);
+    scoreEl.textContent = current;
+    scoreEl.style.color = color;
+    if (progress < 1) {
+      scoreAnimationId = requestAnimationFrame(step);
+    } else {
+      scoreEl.textContent = targetScore;
+      scoreAnimationId = null;
+    }
+  }
+  scoreAnimationId = requestAnimationFrame(step);
+}
+
 function updateRiskScore(score) {
   const risk = getRisk(score);
   const scoreEl = $('#riskScore');
@@ -178,8 +207,7 @@ function updateRiskScore(score) {
   const riskGauge = $('#riskGauge');
 
   if (scoreEl) {
-    scoreEl.textContent = score;
-    scoreEl.style.color = risk.color;
+    animateScoreCounter(score, risk.color);
   }
   if (levelEl) {
     levelEl.textContent = risk.name;
@@ -372,13 +400,32 @@ async function performReview(url) {
   const loading = $('#loadingState');
   const results = $('#results');
   const submitBtn = $('#reviewForm button');
+  const scannerSection = $('#analyzerSection');
 
+  if (scannerSection) scannerSection.classList.add('scanning-active');
   if (loading) loading.hidden = false;
   if (results) results.style.opacity = '0.35';
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="btn-sparkle">◌</span> Scanning…';
   }
+
+  // Dynamic rotating inspection stages
+  const scanStages = [
+    { title: 'Fetching GitHub Diff & Patch Metadata…', sub: 'Streaming modified source files and parsing unified diffs.' },
+    { title: 'Executing Static Vulnerability Analyzers…', sub: 'Running Bandit security rules and AST code smell detectors.' },
+    { title: 'Evaluating Cyclomatic Complexity & Quality…', sub: 'Profiling code maintainability, docstrings, and dead branches.' },
+    { title: 'Consulting Contextual AI Reviewer…', sub: 'Synthesizing line-by-line remediation patches and explanations.' },
+    { title: 'Computing Overall PR Risk Score…', sub: 'Aggregating security weights, bug metrics, and test coverage.' }
+  ];
+  let stageIdx = 0;
+  const loadingTitle = $('#loadingState .loading-title');
+  const loadingSubtitle = $('#loadingState .loading-subtitle');
+  const stageTimer = setInterval(() => {
+    stageIdx = (stageIdx + 1) % scanStages.length;
+    if (loadingTitle) loadingTitle.textContent = scanStages[stageIdx].title;
+    if (loadingSubtitle) loadingSubtitle.textContent = scanStages[stageIdx].sub;
+  }, 500);
 
   try {
     const response = await fetch(`${API_BASE}/review`, {
@@ -426,6 +473,8 @@ async function performReview(url) {
     if (badge) badge.textContent = 'Offline Demo Mode';
     showToast('Offline analysis loaded.');
   } finally {
+    clearInterval(stageTimer);
+    if (scannerSection) scannerSection.classList.remove('scanning-active');
     if (thisSequence === reviewSequence) {
       if (loading) loading.hidden = true;
       if (results) results.style.opacity = '1';
@@ -507,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const typeFilter = $('#typeFilter');
   if (typeFilter) typeFilter.addEventListener('change', renderIssues);
 
-  // Copy Code Fix Button
+  // Copy Code Fix Button with Feedback Pulse
   const listEl = $('#issuesList');
   if (listEl) {
     listEl.addEventListener('click', async event => {
@@ -517,9 +566,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!issue || !issue.fix) return;
       try {
         await navigator.clipboard.writeText(issue.fix);
-        button.textContent = 'Copied ✓';
+        button.classList.add('copied');
+        button.innerHTML = '<span>✓</span> Copied!';
         showToast('Suggested fix copied to clipboard.');
-        window.setTimeout(() => { button.textContent = 'Copy Fix'; }, 1800);
+        window.setTimeout(() => { 
+          button.classList.remove('copied');
+          button.textContent = 'Copy Fix'; 
+        }, 1800);
       } catch {
         showToast('Clipboard access unavailable.');
       }
