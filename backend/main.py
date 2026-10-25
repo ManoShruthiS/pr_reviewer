@@ -137,7 +137,7 @@ def get_status():
         "ai_engine": "OpenAI GPT-4o-mini" if has_openai else "Intelligent Heuristic AI Engine (Offline Safe)",
         "security_scanner": "Bandit v1.9.4",
         "bug_detector": "Pyflakes v4.0.3",
-        "database": "SQLite (reviews.db)"
+        "database": "In-Memory Session (Ephemeral)"
     }
 
 
