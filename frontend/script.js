@@ -472,21 +472,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dismissBtn.addEventListener('click', hideReviewError);
   }
 
-  // Quick Test Sample Chips (Real Public PRs)
-  $$('.sample-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const url = btn.dataset.url;
-      if (!url) return;
-      const input = $('#prUrl');
-      if (input) {
-        input.value = url;
-        const error = $('#urlError');
-        if (error) error.hidden = true;
-        input.removeAttribute('aria-invalid');
-      }
-      performReview(url);
-    });
-  });
 
   // Export / Print Report Button
   const exportBtn = $('#exportReportBtn');

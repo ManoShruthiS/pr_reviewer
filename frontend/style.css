@@ -602,50 +602,6 @@ body {
   color: var(--text-white);
 }
 
-/* Quick PR Live Samples Strip */
-.quick-samples-strip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
-.samples-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
-
-.sample-chip {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-card);
-  color: var(--gh-blue);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sample-chip .sample-icon {
-  font-size: 11px;
-  color: var(--accent-amber);
-}
-
-.sample-chip:hover {
-  background: rgba(56, 139, 253, 0.12);
-  border-color: rgba(56, 139, 253, 0.4);
-  transform: translateY(-1px);
-  color: #79c0ff;
-}
 
 /* Ready State Screen (Before First Analysis) */
 .ready-state-card {
