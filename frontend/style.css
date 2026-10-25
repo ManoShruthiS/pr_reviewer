@@ -366,6 +366,20 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
+.avatar-circle-item:first-child .avatar-name-tooltip {
+  left: 0;
+  transform: translateY(4px);
+}
+
+.avatar-circle-item:first-child:hover .avatar-name-tooltip {
+  transform: translateY(0);
+}
+
+.avatar-circle-item:first-child .avatar-name-tooltip::after {
+  left: 16px;
+  transform: none;
+}
+
 /* ==========================================================================
    Main Viewport & Topbar
    ========================================================================== */

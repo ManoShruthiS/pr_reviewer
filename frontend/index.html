@@ -115,6 +115,17 @@
       opacity: 1 !important; visibility: visible !important;
       transform: translateX(-50%) translateY(0) !important;
     }
+    .avatar-circle-item:first-child .avatar-name-tooltip {
+      left: 0 !important;
+      transform: translateY(4px) !important;
+    }
+    .avatar-circle-item:first-child:hover .avatar-name-tooltip {
+      transform: translateY(0) !important;
+    }
+    .avatar-circle-item:first-child .avatar-name-tooltip::after {
+      left: 16px !important;
+      transform: none !important;
+    }
   </style>
 </head>
 <body class="dark-theme">
