@@ -192,10 +192,20 @@ body {
 }
 
 .nav-icon {
-  font-size: 15px;
-  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 18px;
-  text-align: center;
+  height: 18px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.nav-icon svg {
+  width: 15px;
+  height: 15px;
+  display: block;
 }
 
 .nav-link.active .nav-icon {
