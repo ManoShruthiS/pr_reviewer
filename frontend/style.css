@@ -549,12 +549,12 @@ body {
 
 .hero-headline {
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
   color: var(--text-white);
-  letter-spacing: -0.8px;
-  line-height: 1.2;
-  margin-bottom: 8px;
+  letter-spacing: -0.6px;
+  line-height: 1.25;
+  margin-bottom: 22px;
 }
 
 .gradient-text {
