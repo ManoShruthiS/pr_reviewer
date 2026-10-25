@@ -606,30 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Magic UI Components Suite Runtime
   // =========================================================================
 
-  // 1. Magic UI: Word Rotate Component
-  function initWordRotate() {
-    const container = $('#heroWordRotate');
-    if (!container) return;
-    const items = $$('.word-rotate-item', container);
-    if (items.length <= 1) return;
-
-    let currentIndex = 0;
-    setInterval(() => {
-      const prevIndex = currentIndex;
-      currentIndex = (currentIndex + 1) % items.length;
-
-      items[prevIndex].classList.remove('active');
-      items[prevIndex].classList.add('exit');
-
-      window.setTimeout(() => {
-        items[prevIndex].classList.remove('exit');
-      }, 450);
-
-      items[currentIndex].classList.add('active');
-    }, 2800);
-  }
-
-  // 2. Magic UI: Scroll Progress
+  // 1. Magic UI: Scroll Progress
   function initScrollProgress() {
     const bar = $('#scrollProgress');
     if (!bar) return;
@@ -641,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // 3. Magic UI: Magic Card Glare / Mouse Spotlight
+  // 2. Magic UI: Magic Card Glare / Mouse Spotlight
   function initMagicCardSpotlight() {
     const cards = $$('.kpi-card, .ai-summary-card, .coverage-card');
     cards.forEach(card => {
@@ -656,7 +633,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Initialize Magic UI Interactive Suite
-  initWordRotate();
   initScrollProgress();
   initMagicCardSpotlight();
 });
