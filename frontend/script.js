@@ -540,4 +540,38 @@ document.addEventListener('DOMContentLoaded', () => {
       $$('.nav-link').forEach(item => item.classList.toggle('active', item === link));
     });
   });
+
+  // Magic UI Avatar Circles Interactive Team Widget
+  const teamWidget = $('#teamWidget');
+  const teamPopover = $('#teamPopover');
+  if (teamWidget && teamPopover) {
+    teamWidget.addEventListener('click', (e) => {
+      e.stopPropagation();
+      teamPopover.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!teamWidget.contains(e.target)) {
+        teamPopover.classList.remove('open');
+      }
+    });
+
+    $$('.avatar-circle-item').forEach(circle => {
+      circle.addEventListener('mouseenter', () => {
+        const idx = circle.dataset.memberIdx;
+        $$('.member-mini-card').forEach(card => {
+          if (idx === 'all' || card.dataset.cardIdx === idx) {
+            card.classList.add('active');
+          } else {
+            card.classList.remove('active');
+          }
+        });
+      });
+      circle.addEventListener('mouseleave', () => {
+        $$('.member-mini-card').forEach((card, i) => {
+          card.classList.toggle('active', i === 0);
+        });
+      });
+    });
+  }
 });
