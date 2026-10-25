@@ -284,16 +284,19 @@
         <!-- Ready State Card (Visible when awaiting PR analysis) with Magic UI Beam & Marquee -->
         <section class="ready-state-card" id="readyPrompt">
           <div class="ready-card-content">
-            <div class="ready-icon-halo">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            <div class="ready-icon-halo" title="PR-Doc Code Health Inspector">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.5 3v5a3.5 3.5 0 0 0 7 0V3"></path>
+                <path d="M8 11.5v3a4.5 4.5 0 0 0 9 0v-1.5"></path>
+                <circle cx="18" cy="10" r="2.5"></circle>
+                <path d="M3 3h3"></path>
+                <path d="M10 3h3"></path>
               </svg>
             </div>
             <h3 class="ready-title">PR-Doc Is Ready to Examine Your Pull Request</h3>
             <p class="ready-text">
-              Enter any public GitHub pull request URL above and click <strong>Ask PR-Doc to Review</strong>. PR-Doc will connect directly to GitHub, parse the changed files with static AST analyzers, detect security vulnerabilities, and evaluate risk.
+              Paste any public GitHub PR link above to get started.<br>
+              PR-Doc will inspect code changes, run static security analysis, and deliver a comprehensive risk diagnosis.
             </p>
 
             <!-- Magic UI: Animated Beam Pipeline -->

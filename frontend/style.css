@@ -801,13 +801,21 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-card);
+  background: rgba(56, 139, 253, 0.08);
+  border: 1px solid rgba(56, 139, 253, 0.25);
+  box-shadow: 0 0 20px rgba(56, 139, 253, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
   color: var(--gh-blue);
+  transition: all 0.3s ease;
+}
+
+.ready-icon-halo:hover {
+  transform: scale(1.05);
+  border-color: rgba(56, 139, 253, 0.4);
+  box-shadow: 0 0 24px rgba(56, 139, 253, 0.22);
 }
 
 .ready-title {
