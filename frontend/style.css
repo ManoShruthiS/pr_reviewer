@@ -1509,17 +1509,6 @@ body {
 
 
 /* ==========================================================================
-   Footer
-   ========================================================================== */
-.app-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 24px;
-  border-top: 1px solid var(--border-card);
-  color: var(--text-muted);
-  font-size: 11px;
-/* ==========================================================================
    Toast Notification
    ========================================================================== */
 .toast-popup {
