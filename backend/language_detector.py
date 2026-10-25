@@ -1,7 +1,7 @@
 """
 Language Detector Module
 Identifies programming languages and content categories from file extensions and names.
-Fulfills FR-04 (Multilingual analysis) of the PRiVIEW First Demo Specification.
+Fulfills FR-04 (Multilingual analysis) of the PR-Doc First Demo Specification.
 """
 
 from pathlib import Path
