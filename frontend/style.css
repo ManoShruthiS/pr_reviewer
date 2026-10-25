@@ -327,72 +327,43 @@ body {
   background: var(--bg-tertiary);
 }
 
-/* Compact Team Popover Card */
-.team-interactive-popover {
+/* Single Person Hover Tooltip */
+.avatar-name-tooltip {
   position: absolute;
   bottom: calc(100% + 10px);
-  left: 0;
-  width: 200px;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
   background: #161b22;
   border: 1px solid var(--border-card);
-  border-radius: 8px;
-  box-shadow: 0 12px 28px rgba(1, 4, 9, 0.75), 0 0 0 1px rgba(240, 246, 252, 0.08);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(6px);
-  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-  z-index: 60;
-  pointer-events: none;
-  overflow: hidden;
+  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
+  box-shadow: 0 8px 20px rgba(1, 4, 9, 0.75), 0 0 0 1px rgba(240, 246, 252, 0.08);
+  z-index: 100;
 }
 
-.avatar-circles-widget:hover .team-interactive-popover,
-.avatar-circles-widget:focus-within .team-interactive-popover,
-.team-interactive-popover.open {
+.avatar-name-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #161b22 transparent transparent transparent;
+}
+
+.avatar-circle-item:hover .avatar-name-tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.popover-inner {
-  padding: 10px 12px;
-}
-
-.popover-header-simple {
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.popover-dept-title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--gh-blue);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.team-names-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.team-name-item {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  padding: 4px 6px;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-}
-
-.team-name-item:hover,
-.team-name-item.highlight {
-  background: var(--bg-tertiary);
-  color: #fff;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* ==========================================================================

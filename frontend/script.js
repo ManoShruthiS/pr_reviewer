@@ -568,35 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Magic UI Avatar Circles Interactive Team Widget
-  const teamWidget = $('#teamWidget');
-  const teamPopover = $('#teamPopover');
-  if (teamWidget && teamPopover) {
-    teamWidget.addEventListener('click', (e) => {
-      e.stopPropagation();
-      teamPopover.classList.toggle('open');
-    });
 
-    document.addEventListener('click', (e) => {
-      if (!teamWidget.contains(e.target)) {
-        teamPopover.classList.remove('open');
-      }
-    });
-
-    $$('.avatar-circle-item').forEach(circle => {
-      circle.addEventListener('mouseenter', () => {
-        const idx = circle.dataset.memberIdx;
-        $$('.team-name-item').forEach(item => {
-          item.classList.toggle('highlight', item.dataset.itemIdx === idx);
-        });
-      });
-      circle.addEventListener('mouseleave', () => {
-        $$('.team-name-item').forEach(item => {
-          item.classList.remove('highlight');
-        });
-      });
-    });
-  }
 
   // =========================================================================
   // Magic UI Components Suite Runtime

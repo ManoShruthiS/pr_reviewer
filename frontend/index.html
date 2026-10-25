@@ -94,25 +94,27 @@
     /* Magic UI: Confetti Canvas */
     .confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
 
-    /* Compact Team Popover Card */
-    .team-interactive-popover {
-      position: absolute !important; bottom: calc(100% + 10px) !important; left: 0 !important;
-      width: 200px !important; background: #161b22 !important; border: 1px solid #30363d !important;
-      border-radius: 8px !important; box-shadow: 0 12px 28px rgba(1, 4, 9, 0.75), 0 0 0 1px rgba(240, 246, 252, 0.08) !important;
-      opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-      z-index: 60 !important; pointer-events: none; overflow: hidden;
+    /* Single Person Hover Tooltip */
+    .avatar-name-tooltip {
+      position: absolute !important; bottom: calc(100% + 10px) !important; left: 50% !important;
+      transform: translateX(-50%) translateY(4px) !important;
+      background: #161b22 !important; border: 1px solid #30363d !important;
+      color: #fff !important; padding: 4px 10px !important; border-radius: 6px !important;
+      font-size: 11px !important; font-weight: 600 !important; white-space: nowrap !important;
+      pointer-events: none !important; opacity: 0 !important; visibility: hidden !important;
+      transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s !important;
+      box-shadow: 0 8px 20px rgba(1, 4, 9, 0.75), 0 0 0 1px rgba(240, 246, 252, 0.08) !important;
+      z-index: 100 !important;
     }
-    .avatar-circles-widget:hover .team-interactive-popover,
-    .avatar-circles-widget:focus-within .team-interactive-popover,
-    .team-interactive-popover.open {
-      opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important;
+    .avatar-name-tooltip::after {
+      content: ""; position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%); border-width: 5px; border-style: solid;
+      border-color: #161b22 transparent transparent transparent;
     }
-    .popover-inner { padding: 10px 12px !important; }
-    .popover-header-simple { margin-bottom: 8px !important; padding-bottom: 6px !important; border-bottom: 1px solid #21262d !important; }
-    .popover-dept-title { font-family: ui-monospace, SFMono-Regular, monospace !important; font-size: 10px !important; font-weight: 700 !important; color: #58a6ff !important; text-transform: uppercase; letter-spacing: 0.5px; }
-    .team-names-list { display: flex !important; flex-direction: column !important; gap: 3px !important; }
-    .team-name-item { font-size: 12px !important; font-weight: 600 !important; color: #e6edf3 !important; padding: 4px 6px !important; border-radius: 4px !important; transition: all 0.15s ease !important; }
-    .team-name-item:hover, .team-name-item.highlight { background: #21262d !important; color: #fff !important; }
+    .avatar-circle-item:hover .avatar-name-tooltip {
+      opacity: 1 !important; visibility: visible !important;
+      transform: translateX(-50%) translateY(0) !important;
+    }
   </style>
 </head>
 <body class="dark-theme">
@@ -176,34 +178,23 @@
             <span class="widget-dept-tag">AI&amp;DS</span>
           </div>
 
-          <!-- Overlapping Avatar Circles for All 4 Members -->
+          <!-- Overlapping Avatar Circles: Hovering shows ONLY that person's name -->
           <div class="avatar-circles-row">
-            <div class="avatar-circle-item" data-member-idx="0" title="Mano Shruthi S">
+            <div class="avatar-circle-item">
               <span class="avatar-avatar-badge lead">MS</span>
+              <div class="avatar-name-tooltip">Mano Shruthi S</div>
             </div>
-            <div class="avatar-circle-item" data-member-idx="1" title="Pratigsaa S">
+            <div class="avatar-circle-item">
               <span class="avatar-avatar-badge">PS</span>
+              <div class="avatar-name-tooltip">Pratigsaa S</div>
             </div>
-            <div class="avatar-circle-item" data-member-idx="2" title="Safrina S">
+            <div class="avatar-circle-item">
               <span class="avatar-avatar-badge">SS</span>
+              <div class="avatar-name-tooltip">Safrina S</div>
             </div>
-            <div class="avatar-circle-item" data-member-idx="3" title="Srivarshini V">
+            <div class="avatar-circle-item">
               <span class="avatar-avatar-badge">SV</span>
-            </div>
-          </div>
-
-          <!-- Compact Names Popover Card -->
-          <div class="team-interactive-popover" id="teamPopover">
-            <div class="popover-inner">
-              <div class="popover-header-simple">
-                <span class="popover-dept-title">Department of AI &amp; DS</span>
-              </div>
-              <div class="team-names-list">
-                <div class="team-name-item" data-item-idx="0">Mano Shruthi S</div>
-                <div class="team-name-item" data-item-idx="1">Pratigsaa S</div>
-                <div class="team-name-item" data-item-idx="2">Safrina S</div>
-                <div class="team-name-item" data-item-idx="3">Srivarshini V</div>
-              </div>
+              <div class="avatar-name-tooltip">Srivarshini V</div>
             </div>
           </div>
         </div>
