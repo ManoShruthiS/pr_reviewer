@@ -4,25 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0a0f1d" />
-  <meta name="description" content="AI-Powered Intelligent Code Review and Risk Analysis System for GitHub Pull Requests." />
-  <title>PR-Doc — AI Code Review & Risk Analysis</title>
+  <meta name="description" content="PR-Doc — AI-Powered Intelligent Code Review and Risk Analysis System for GitHub Pull Requests." />
+  <title>PR-Doc — AI Code Review &amp; Risk Analysis</title>
 
-  <!-- Modern Fonts -->
+  <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body class="dark-theme">
-  <!-- Glowing Background Ambient Effects -->
-  <div class="ambient-glow glow-burgundy"></div>
-  <div class="ambient-glow glow-darkblue"></div>
-
   <div class="app-layout">
-    <!-- Sleek Sidebar Navigation -->
+    <!-- Minimal Sidebar Navigation -->
     <aside class="sidebar" aria-label="Main navigation">
       <div class="sidebar-header">
         <a class="brand-logo" href="#top" aria-label="PR-Doc Home">
@@ -38,12 +33,8 @@
       </div>
 
       <nav class="nav-menu">
-        <div class="nav-section-title">MAIN NAVIGATION</div>
-        <a class="nav-link active" href="#top">
-          <span class="nav-icon">◈</span>
-          <span class="nav-label">Dashboard</span>
-        </a>
-        <a class="nav-link" href="#analyzerSection">
+        <div class="nav-section-title">NAVIGATION</div>
+        <a class="nav-link active" href="#analyzerSection">
           <span class="nav-icon">⟁</span>
           <span class="nav-label">Analyze PR</span>
         </a>
@@ -55,48 +46,20 @@
           <span class="nav-icon">⛊</span>
           <span class="nav-label">Coverage &amp; Scope</span>
         </a>
-        <a class="nav-link" href="#charts">
-          <span class="nav-icon">☵</span>
-          <span class="nav-label">Visual Analytics</span>
-        </a>
         <a class="nav-link" href="#detectedIssues">
           <span class="nav-icon">⚑</span>
-          <span class="nav-label">Issues & Fixes</span>
-        </a>
-        <a class="nav-link" href="#historySection">
-          <span class="nav-icon">◷</span>
-          <span class="nav-label">Audit History</span>
+          <span class="nav-label">Issues &amp; Fixes</span>
         </a>
       </nav>
-
-      <!-- Academic & Batch Info Card -->
-      <div class="academic-card">
-        <div class="card-badge-row">
-          <span class="academic-tag">BATCH-13</span>
-          <span class="dept-tag">CSE</span>
-        </div>
-        <div class="project-institution">Avinashilingam Institute</div>
-        <div class="project-dept">Dept of Computer Science &amp; Engg</div>
-        <div class="team-avatars-row" title="Mano Shruthi, Pratigsaa, Safrina, Srivarshini">
-          <span class="team-avatar" title="Mano Shruthi S">M</span>
-          <span class="team-avatar" title="Pratigsaa S">P</span>
-          <span class="team-avatar" title="Safrina S">S</span>
-          <span class="team-avatar" title="Srivarshini V">V</span>
-          <span class="team-count">+4</span>
-        </div>
-      </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Viewport -->
     <main id="top" class="main-viewport">
-      <!-- Topbar Header -->
+      <!-- Minimal Topbar Header -->
       <header class="topbar">
         <div class="topbar-left">
-          <div class="breadcrumbs">
-            <span class="crumb-icon">⚡</span>
-            <span class="crumb-parent">Final Year Project</span>
-            <span class="crumb-sep">/</span>
-            <span class="crumb-current">AI-Powered Intelligent Code Review</span>
+          <div class="topbar-heading">
+            <span class="topbar-title">Pull Request Risk &amp; Quality Analysis</span>
           </div>
         </div>
 
@@ -107,24 +70,21 @@
             <span class="status-text" id="dataSourceBadge">System Online</span>
           </div>
 
-          <button id="exportReportBtn" type="button" class="btn-action-outline" title="Print or save PDF report">
+          <button id="exportReportBtn" type="button" class="btn-action-outline" title="Export or print review report">
             <span class="btn-icon">⎙</span> Export Report
           </button>
         </div>
       </header>
 
       <div class="content-container">
-        <!-- Hero Input & Scanner Section -->
+        <!-- PR Input Section -->
         <section class="hero-scanner-section" id="analyzerSection">
           <div class="scanner-header">
-            <div class="badge-eyebrow">
-              <span class="sparkle-icon">✦</span> STATIC SCANNING + AI REASONING ENGINE
-            </div>
             <h1 class="hero-headline">
               Intelligent Pull Request <span class="gradient-text">Risk Analyzer</span>
             </h1>
             <p class="hero-subtext">
-              Automated multi-tier vulnerability detection, AST code-quality analysis, and LLM-assisted explanations with 1-click code fixes before merge.
+              Automated static vulnerability scanning, multi-language coverage, and AI-assisted defect analysis before merge.
             </p>
           </div>
 
@@ -156,71 +116,13 @@
           </p>
         </section>
 
-        <!-- Dynamic Review Pipeline Tracker -->
-        <section class="pipeline-section" aria-label="Review Workflow Stages">
-          <div class="pipeline-grid">
-            <div class="pipeline-step done" data-step="1">
-              <div class="step-badge">1</div>
-              <div class="step-info">
-                <span class="step-name">PR Ingestion</span>
-                <span class="step-desc">PyGithub Diff Parsing</span>
-              </div>
-              <span class="step-state-icon">✓</span>
-            </div>
-
-            <div class="pipeline-divider"></div>
-
-            <div class="pipeline-step done" data-step="2">
-              <div class="step-badge">2</div>
-              <div class="step-info">
-                <span class="step-name">Static Analysis</span>
-                <span class="step-desc">Bandit &amp; Pyflakes</span>
-              </div>
-              <span class="step-state-icon">✓</span>
-            </div>
-
-            <div class="pipeline-divider"></div>
-
-            <div class="pipeline-step done" data-step="3">
-              <div class="step-badge">3</div>
-              <div class="step-info">
-                <span class="step-name">Quality &amp; AST</span>
-                <span class="step-desc">Complexity &amp; Smells</span>
-              </div>
-              <span class="step-state-icon">✓</span>
-            </div>
-
-            <div class="pipeline-divider"></div>
-
-            <div class="pipeline-step" data-step="4">
-              <div class="step-badge">4</div>
-              <div class="step-info">
-                <span class="step-name">AI Explanations</span>
-                <span class="step-desc">LLM Context Reasoning</span>
-              </div>
-              <span class="step-spinner"></span>
-            </div>
-
-            <div class="pipeline-divider"></div>
-
-            <div class="pipeline-step" data-step="5">
-              <div class="step-badge">5</div>
-              <div class="step-info">
-                <span class="step-name">Risk Assessment</span>
-                <span class="step-desc">Score &amp; DB Persistence</span>
-              </div>
-              <span class="step-empty"></span>
-            </div>
-          </div>
-        </section>
-
         <!-- Skeleton Loading State -->
         <section class="loading-state-card" id="loadingState" aria-live="polite" hidden>
           <div class="loading-header">
             <div class="spinner-ring"></div>
             <div>
               <strong class="loading-title">Scanning Code Changes with Static Analyzers &amp; AI...</strong>
-              <div class="loading-subtitle">Extracting patches, mapping CWE vulnerabilities, and calculating pull request risk score.</div>
+              <div class="loading-subtitle">Extracting patches, mapping vulnerabilities, and calculating pull request risk score.</div>
             </div>
           </div>
           <div class="skeleton-bar skeleton-full"></div>
@@ -397,47 +299,6 @@
             </div>
           </section>
 
-          <!-- Charts Visualization Grid -->
-          <div class="charts-section" id="charts">
-            <!-- Doughnut: Distribution by Type -->
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <div>
-                  <h3 class="chart-title">Findings by Category</h3>
-                  <div class="chart-subtitle">Security vs Bug vs Code Quality distribution</div>
-                </div>
-              </div>
-              <div class="doughnut-chart-wrapper">
-                <div class="canvas-wrap">
-                  <canvas id="typeChart"></canvas>
-                  <div class="doughnut-center-info">
-                    <strong id="totalIssueCount">6</strong>
-                    <span>Total Issues</span>
-                  </div>
-                </div>
-                <div class="custom-legend" id="typeLegend"></div>
-              </div>
-            </div>
-
-            <!-- Bar Chart: Distribution by Severity -->
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <div>
-                  <h3 class="chart-title">Severity Prioritization</h3>
-                  <div class="chart-subtitle">Triage findings from Critical to Low</div>
-                </div>
-              </div>
-              <div class="bar-chart-wrapper">
-                <canvas id="severityChart"></canvas>
-              </div>
-              <div class="chart-legend-strip">
-                <span class="legend-pill pill-high"><i class="dot-high"></i> High / Critical</span>
-                <span class="legend-pill pill-med"><i class="dot-med"></i> Medium</span>
-                <span class="legend-pill pill-low"><i class="dot-low"></i> Low Risk</span>
-              </div>
-            </div>
-          </div>
-
           <!-- Detailed Findings Feed -->
           <section class="issues-feed-section" id="detectedIssues">
             <div class="feed-header">
@@ -478,47 +339,12 @@
               <p>Adjust your filter settings above to view other findings.</p>
             </div>
           </section>
-
-          <!-- Audit History Log (SQLite) -->
-          <section class="history-log-section" id="historySection">
-            <div class="history-card">
-              <div class="history-header">
-                <div>
-                  <span class="history-kicker">SQLITE DATABASE PERSISTENCE</span>
-                  <h3 class="history-title">Pull Request Review Audit Log</h3>
-                </div>
-                <button id="refreshHistoryBtn" type="button" class="btn-refresh">
-                  <span>↻</span> Sync History
-                </button>
-              </div>
-              <div class="table-responsive">
-                <table class="audit-table">
-                  <thead>
-                    <tr>
-                      <th>Audit ID</th>
-                      <th>Pull Request / Repository</th>
-                      <th>Risk Evaluation</th>
-                      <th>Timestamp (UTC)</th>
-                      <th class="text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="historyTableBody">
-                    <tr><td colspan="5" class="table-loading">Querying SQLite database (reviews.db)...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
         </section>
 
-        <!-- Project Footer -->
+        <!-- Minimal App Footer -->
         <footer class="app-footer">
-          <div class="footer-left">
-            <span class="footer-gem">⬡</span>
-            <span>Batch-13 Final Year Project • Department of Computer Science &amp; Engineering</span>
-          </div>
-          <div class="footer-right">
-            <span>Avinashilingam Institute for Home Science &amp; Higher Education for Women, Coimbatore</span>
+          <div class="footer-minimal">
+            <span>PR-Doc • AI-Powered Pull Request Code Review &amp; Risk Analysis</span>
           </div>
         </footer>
       </div>

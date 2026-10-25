@@ -3,7 +3,7 @@
 // Base URL for FastAPI backend (relative if served directly from FastAPI, otherwise localhost:8000)
 const API_BASE = window.location.origin.includes('8000') ? '' : 'http://localhost:8000';
 
-// Default / fallback review dataset
+// Default / fallback review dataset (FR-05, FR-06, FR-07, FR-12)
 const defaultReview = {
   riskScore: 72,
   repo: 'enterprise/auth-service#14',
@@ -112,15 +112,6 @@ const defaultReview = {
 };
 
 let currentReview = { ...defaultReview };
-
-// Burgundy & Dark Blue Theme Chart Palette
-const palette = {
-  type: { security: '#f43f5e', bug: '#f59e0b', quality: '#38bdf8' },
-  severity: { high: '#f43f5e', medium: '#f59e0b', low: '#10b981' }
-};
-
-let typeChart = null;
-let severityChart = null;
 let toastTimer = null;
 let reviewSequence = 0;
 
@@ -139,7 +130,7 @@ function showToast(message) {
   toast.textContent = message;
   toast.classList.add('show');
   window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3800);
+  toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
 function getRisk(score) {
@@ -151,8 +142,6 @@ function getRisk(score) {
 
 function validatePRUrl(value) {
   if (!value) return false;
-  const lower = value.toLowerCase();
-  if (lower.includes('demo') || lower.includes('sample')) return true;
   try {
     const url = new URL(value);
     if (url.hostname.toLowerCase() !== 'github.com') return false;
@@ -211,104 +200,12 @@ function updateMetrics(issues = []) {
   const secEl = $('#securityCount');
   const bugEl = $('#bugCount');
   const qualEl = $('#qualityCount');
-  const totalEl = $('#totalIssueCount');
   const headingEl = $('#issueHeadingCount');
 
   if (secEl) secEl.textContent = types.security || 0;
   if (bugEl) bugEl.textContent = types.bug || 0;
   if (qualEl) qualEl.textContent = types.quality || 0;
-  if (totalEl) totalEl.textContent = issues.length;
   if (headingEl) headingEl.textContent = `${issues.length} Issues Flagged`;
-}
-
-function renderCharts(issues = []) {
-  if (!window.Chart) {
-    showToast('Chart.js library is loading or offline.');
-    return;
-  }
-  const types = countBy('type', issues);
-  const severities = countBy('severity', issues);
-
-  const commonOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: { duration: 600, easing: 'easeOutQuart' },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-        borderColor: 'rgba(190, 24, 93, 0.4)',
-        borderWidth: 1,
-        padding: 10,
-        titleColor: '#f8fafc',
-        bodyColor: '#e2e8f0',
-        titleFont: { family: 'Inter', size: 12, weight: '700' },
-        bodyFont: { family: 'Inter', size: 11 }
-      }
-    }
-  };
-
-  if (typeChart) typeChart.destroy();
-  if (severityChart) severityChart.destroy();
-
-  const typeCanvas = $('#typeChart');
-  if (typeCanvas) {
-    typeChart = new Chart(typeCanvas, {
-      type: 'doughnut',
-      data: {
-        labels: ['Security', 'Bug', 'Quality'],
-        datasets: [{
-          data: [types.security || 0, types.bug || 0, types.quality || 0],
-          backgroundColor: [palette.type.security, palette.type.bug, palette.type.quality],
-          borderColor: '#0f172a',
-          borderWidth: 3,
-          hoverOffset: 6
-        }]
-      },
-      options: { ...commonOptions, cutout: '72%', layout: { padding: 2 } }
-    });
-  }
-
-  const sevCanvas = $('#severityChart');
-  if (sevCanvas) {
-    severityChart = new Chart(sevCanvas, {
-      type: 'bar',
-      data: {
-        labels: ['High', 'Medium', 'Low'],
-        datasets: [{
-          data: [severities.high || 0, severities.medium || 0, severities.low || 0],
-          backgroundColor: [palette.severity.high, palette.severity.medium, palette.severity.low],
-          borderRadius: 6,
-          borderSkipped: false,
-          maxBarThickness: 38
-        }]
-      },
-      options: {
-        ...commonOptions,
-        scales: {
-          x: {
-            grid: { display: false },
-            border: { display: false },
-            ticks: { color: '#94a3b8', font: { family: 'Inter', size: 11, weight: '600' } }
-          },
-          y: {
-            beginAtZero: true,
-            suggestedMax: Math.max(3, ...Object.values(severities)),
-            ticks: { precision: 0, stepSize: 1, color: '#64748b', font: { family: 'JetBrains Mono', size: 10 } },
-            grid: { color: 'rgba(148, 163, 184, 0.08)', drawTicks: false },
-            border: { display: false }
-          }
-        }
-      }
-    });
-  }
-
-  const legendEl = $('#typeLegend');
-  if (legendEl) {
-    legendEl.innerHTML = [
-      ['security', 'Security Flaws'], ['bug', 'Bugs & Errors'], ['quality', 'Code Quality']
-    ].map(([key, label]) => `<div><span class="legend-dot" style="background:${palette.type[key]};box-shadow:0 0 8px ${palette.type[key]}"></span><span>${label}</span><strong>${types[key] || 0}</strong></div>`).join('');
-  }
 }
 
 function createIssueCard(issue, index) {
@@ -461,7 +358,6 @@ function renderReview(reviewData) {
   const titleEl = $('#resultsHeadingTitle');
   if (titleEl) titleEl.textContent = prTitle;
 
-  renderCharts(issues);
   renderIssues();
 
   const resultsSection = $('#results');
@@ -484,48 +380,19 @@ async function performReview(url) {
     submitBtn.innerHTML = '<span class="btn-sparkle">◌</span> Scanning…';
   }
 
-  const steps = $$('.pipeline-step');
-  const animateStep = (idx) => {
-    steps.forEach((step, sIdx) => {
-      step.classList.toggle('done', sIdx <= idx);
-      const spinner = $('.step-spinner', step);
-      if (spinner) spinner.remove();
-      if (sIdx === idx + 1 && sIdx < steps.length) {
-        const sp = document.createElement('span');
-        sp.className = 'step-spinner';
-        step.append(sp);
-      }
-    });
-  };
-
-  animateStep(0);
-
   try {
-    // Step 1: Fetch
-    animateStep(1);
     const response = await fetch(`${API_BASE}/review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ pr_url: url })
     });
 
-    animateStep(3);
-
     if (!response.ok) {
       throw new Error(`Server returned HTTP ${response.status}`);
     }
 
     const data = await response.json();
-    animateStep(4);
-
     if (thisSequence !== reviewSequence) return;
-
-    // Mark all steps done
-    steps.forEach(step => {
-      step.classList.add('done');
-      const sp = $('.step-spinner', step);
-      if (sp) sp.remove();
-    });
 
     renderReview({
       riskScore: data.riskScore,
@@ -539,59 +406,25 @@ async function performReview(url) {
     const badge = $('#dataSourceBadge');
     if (badge) badge.textContent = 'Live Backend Scan';
 
-    showToast(`Scan complete! Found ${data.issues ? data.issues.length : 0} issues (Risk: ${data.riskScore}/100).`);
-    loadHistory();
+    showToast(`Scan complete: ${data.issues ? data.issues.length : 0} issues (Risk: ${data.riskScore}/100)`);
 
   } catch (err) {
-    console.warn('API review request failed, running offline fallback:', err);
-    // Graceful offline fallback
-    await new Promise(r => setTimeout(r, 1000));
+    console.warn('API review failed, using fallback:', err);
+    await new Promise(r => setTimeout(r, 800));
     if (thisSequence !== reviewSequence) return;
 
-    steps.forEach(step => step.classList.add('done'));
-
-    const isSecurityDemo = url.includes('auth') || url.includes('security') || url.includes('/1');
-    const isCleanDemo = url.includes('clean') || url.includes('/3');
-
-    let fallbackIssues = defaultReview.issues;
-    let fallbackScore = 72;
-
-    if (isCleanDemo) {
-      fallbackIssues = [
-        {
-          id: 1,
-          type: 'quality',
-          severity: 'low',
-          message: 'Minor whitespace and naming consistency',
-          file: 'config.py',
-          line: 12,
-          source: 'Static Tool (AST Analysis)',
-          confidence: 'High',
-          explanation: 'Function naming adheres to standard conventions. No security flaws or syntax bugs detected.',
-          impact: 'None. Safe for production deployment.',
-          fix: 'def get_database_url() -> str:\n    return os.getenv("DATABASE_URL", "sqlite:///app.db")',
-          fixExplanation: 'Adheres to PEP 8 standards.'
-        }
-      ];
-      fallbackScore = 15;
-    } else if (!isSecurityDemo) {
-      fallbackIssues = defaultReview.issues.slice(2, 6);
-      fallbackScore = 45;
-    }
-
     renderReview({
-      riskScore: fallbackScore,
+      riskScore: defaultReview.riskScore,
       repo: repoFromURL(url),
-      prTitle: isCleanDemo ? 'Clean Feature PR' : (isSecurityDemo ? 'Critical Security Vulnerabilities PR' : 'Runtime Bugs & Warnings PR'),
+      prTitle: 'Pull Request Code Review',
       author: 'dev-contributor',
-      issues: fallbackIssues,
+      issues: defaultReview.issues,
       coverage: defaultReview.coverage
     });
 
     const badge = $('#dataSourceBadge');
     if (badge) badge.textContent = 'Offline Demo Mode';
-
-    showToast('Offline demo simulation loaded successfully.');
+    showToast('Offline analysis loaded.');
   } finally {
     if (thisSequence === reviewSequence) {
       if (loading) loading.hidden = true;
@@ -601,67 +434,6 @@ async function performReview(url) {
         submitBtn.innerHTML = '<span class="btn-sparkle">✦</span> Run Analysis <span class="btn-arrow">→</span>';
       }
     }
-  }
-}
-
-// Load past reviews from SQLite via FastAPI
-async function loadHistory() {
-  const tbody = $('#historyTableBody');
-  if (!tbody) return;
-
-  try {
-    const res = await fetch(`${API_BASE}/history`);
-    if (!res.ok) throw new Error('History endpoint error');
-    const items = await res.json();
-
-    if (!items || items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="padding:16px;text-align:center;color:#64748b;">No reviews stored in database yet. Run an analysis above!</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = items.map(item => {
-      const risk = getRisk(item.risk_score || 0);
-      const dateStr = item.created_at ? new Date(item.created_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : 'Recently';
-      return `<tr>
-        <td style="font-family:var(--font-mono);color:#93c5fd;font-weight:600;">#${item.id}</td>
-        <td>
-          <div style="font-weight:600;color:var(--text-white);">${escapeHTML(item.pr_title || 'PR Review')}</div>
-          <small style="color:#64748b;font-family:var(--font-mono);">${escapeHTML(item.pr_url)}</small>
-        </td>
-        <td>
-          <span class="risk-badge-pill ${risk.className}">
-            ${item.risk_score}/100 · ${risk.name}
-          </span>
-        </td>
-        <td style="color:#94a3b8;font-size:11px;">${dateStr}</td>
-        <td class="text-right">
-          <button type="button" class="view-history-item-btn" data-history-id="${item.id}">View Report</button>
-        </td>
-      </tr>`;
-    }).join('');
-
-  } catch (err) {
-    tbody.innerHTML = '<tr><td colspan="5" style="padding:16px;text-align:center;color:#64748b;">Start FastAPI backend (<code>python -m uvicorn main:app</code>) to sync SQLite review history.</td></tr>';
-  }
-}
-
-// Fetch single review from history
-async function loadReviewById(id) {
-  try {
-    showToast(`Loading review #${id} from SQLite database...`);
-    const res = await fetch(`${API_BASE}/review/${id}`);
-    if (!res.ok) throw new Error('Failed to load review');
-    const data = await res.json();
-    renderReview({
-      riskScore: data.riskScore,
-      repo: repoFromURL(data.prUrl),
-      prTitle: data.prTitle,
-      author: 'Stored Review',
-      issues: data.issues || []
-    });
-    showToast(`Loaded review #${id} (${data.prTitle})`);
-  } catch (err) {
-    showToast(`Could not load review #${id}: ${err.message}`);
   }
 }
 
@@ -682,15 +454,13 @@ async function checkSystemStatus() {
     const dot = $('#liveStatusDot');
     if (dot) dot.style.background = '#f59e0b';
     const dataBadge = $('#dataSourceBadge');
-    if (dataBadge) dataBadge.textContent = 'Demo Mode (Offline)';
+    if (dataBadge) dataBadge.textContent = 'Backend Offline';
   }
 }
 
 // Setup Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-  // Initial demo rendering
   renderReview(defaultReview);
-  loadHistory();
   checkSystemStatus();
 
   // Review Form Submit
@@ -713,37 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Quick Demo Preset Pills (.preset-chip and .preset-btn)
-  $$('.preset-chip, .preset-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const url = btn.dataset.url;
-      const input = $('#prUrl');
-      if (input) input.value = url;
-      const error = $('#urlError');
-      if (error) error.hidden = true;
-      performReview(url);
-    });
-  });
-
-  // History Table Clicks
-  const historyTable = $('#historyTableBody');
-  if (historyTable) {
-    historyTable.addEventListener('click', event => {
-      const btn = event.target.closest('[data-history-id]');
-      if (!btn) return;
-      loadReviewById(btn.dataset.historyId);
-    });
-  }
-
-  // Refresh History Button
-  const refreshBtn = $('#refreshHistoryBtn');
-  if (refreshBtn) {
-    refreshBtn.addEventListener('click', () => {
-      loadHistory();
-      showToast('Review history refreshed.');
-    });
-  }
-
   // Export / Print Report Button
   const exportBtn = $('#exportReportBtn');
   if (exportBtn) {
@@ -752,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Input Clear Error on typing
+  // Clear Input Error on typing
   const prInput = $('#prUrl');
   if (prInput) {
     prInput.addEventListener('input', () => {
@@ -762,13 +501,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Filters
+  // Severity & Category Filters
   const sevFilter = $('#severityFilter');
   if (sevFilter) sevFilter.addEventListener('change', renderIssues);
   const typeFilter = $('#typeFilter');
   if (typeFilter) typeFilter.addEventListener('change', renderIssues);
 
-  // Copy code fix button
+  // Copy Code Fix Button
   const listEl = $('#issuesList');
   if (listEl) {
     listEl.addEventListener('click', async event => {
@@ -787,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Sidebar navigation smooth scroll / active state
+  // Smooth Navigation Links
   $$('.nav-link').forEach(link => link.addEventListener('click', () => {
     $$('.nav-link').forEach(item => item.classList.toggle('active', item === link));
   }));
