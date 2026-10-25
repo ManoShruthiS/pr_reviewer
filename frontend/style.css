@@ -777,25 +777,27 @@ body {
   color: var(--gh-blue);
 }
 
-/* KPI Grid */
+/* KPI Grid - Compact Streamlined Layout */
 .kpi-grid {
   display: grid;
-  grid-template-columns: 280px 1fr 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: 330px 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+  align-items: stretch;
 }
 
 .kpi-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
-  border-radius: 10px;
-  padding: 18px 20px;
+  border-radius: 8px;
+  padding: 12px 16px;
   box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  min-height: 110px;
 }
 
 .kpi-card:hover {
@@ -803,10 +805,8 @@ body {
   box-shadow: var(--shadow-hover);
 }
 
-/* Risk Gauge Card */
+/* Risk Gauge Card (Compact Horizontal Layout) */
 .risk-gauge-card {
-  align-items: center;
-  text-align: center;
   background: var(--bg-card);
   grid-row: span 1;
 }
@@ -816,11 +816,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 4px;
 }
 
 .kpi-tag {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -829,16 +830,23 @@ body {
 .kpi-info-icon {
   color: var(--text-muted);
   cursor: help;
-  font-size: 12px;
+  font-size: 11px;
+}
+
+.gauge-compact-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
 }
 
 .gauge-container {
-  width: 200px;
-  height: 110px;
+  width: 110px;
+  height: 62px;
   position: relative;
-  margin: 10px 0 6px;
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .gauge-svg {
@@ -850,14 +858,14 @@ body {
 .gauge-track {
   fill: none;
   stroke: var(--border-subtle);
-  stroke-width: 14;
+  stroke-width: 15;
   stroke-linecap: round;
 }
 
 .gauge-value {
   fill: none;
   stroke: var(--critical-red);
-  stroke-width: 14;
+  stroke-width: 15;
   stroke-linecap: round;
   stroke-dasharray: 282.7;
   stroke-dashoffset: 79;
@@ -873,26 +881,34 @@ body {
 }
 
 .gauge-number {
-  font-size: 42px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 700;
   font-family: var(--font-display);
   color: var(--text-white);
   line-height: 1;
 }
 
 .gauge-scale {
-  font-size: 11px;
+  font-size: 9px;
   color: var(--text-muted);
   font-family: var(--font-mono);
 }
 
+.risk-verdict-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
 .risk-badge-pill {
-  padding: 5px 14px;
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 2px 8px;
   border-radius: 99px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.6px;
-  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
 }
 
 .risk-badge-pill.critical { background: var(--critical-bg); color: var(--critical-red); border: 1px solid var(--critical-border); }
@@ -902,49 +918,54 @@ body {
 
 .risk-verdict-caption {
   font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 8px;
-  line-height: 1.4;
+  color: var(--text-secondary);
+  line-height: 1.35;
 }
 
-/* Metric Cards (Security, Bugs, Quality) */
+/* Metric Cards (Security, Bugs, Quality) - Compact Layout */
 .metric-card {
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 
+.metric-top-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .metric-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
-.security-box { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); }
-.bug-box { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); }
-.quality-box { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); }
-
-.metric-data {
-  margin-top: 14px;
-}
+.security-box { background: rgba(248, 81, 73, 0.15); border: 1px solid rgba(248, 81, 73, 0.3); }
+.bug-box { background: rgba(210, 153, 34, 0.15); border: 1px solid rgba(210, 153, 34, 0.3); }
+.quality-box { background: rgba(88, 166, 255, 0.15); border: 1px solid rgba(88, 166, 255, 0.3); }
 
 .metric-label {
   font-size: 12px;
   color: var(--text-secondary);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .metric-value-wrap {
   display: flex;
   align-items: baseline;
   gap: 6px;
-  margin-top: 4px;
+  margin: 6px 0 4px;
 }
 
 .metric-number {
-  font-size: 32px;
-  font-weight: 800;
+  font-size: 26px;
+  font-weight: 700;
   font-family: var(--font-display);
   color: var(--text-white);
   line-height: 1;
@@ -956,10 +977,10 @@ body {
 }
 
 .metric-bar-bg {
-  height: 5px;
-  background: rgba(30, 41, 69, 0.6);
+  height: 4px;
+  background: var(--border-subtle);
   border-radius: 99px;
-  margin-top: 16px;
+  margin-top: auto;
   overflow: hidden;
 }
 
@@ -970,16 +991,17 @@ body {
 
 .bar-security { width: 75%; background: var(--critical-red); }
 .bar-bug { width: 50%; background: var(--warning-amber); }
-.bar-quality { width: 40%; background: var(--blue-vibrant); }
+.bar-quality { width: 40%; background: var(--quality-blue); }
 
 /* AI Summary Card spanning full width under the metrics */
 .ai-summary-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
-  border-radius: 10px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
   box-shadow: var(--shadow-card);
+  width: 100%;
 }
 
 .ai-summary-header {
