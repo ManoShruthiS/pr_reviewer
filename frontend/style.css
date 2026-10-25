@@ -825,31 +825,6 @@ body {
   margin-bottom: 22px;
 }
 
-.ready-features-grid {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.ready-feat-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.feat-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-
-.feat-dot.green { background: var(--safe-emerald); box-shadow: 0 0 6px rgba(46, 160, 67, 0.4); }
-.feat-dot.blue { background: var(--gh-blue); box-shadow: 0 0 6px rgba(88, 166, 255, 0.4); }
-.feat-dot.purple { background: #a371f7; box-shadow: 0 0 6px rgba(163, 113, 247, 0.4); }
 
 
 

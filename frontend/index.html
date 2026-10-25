@@ -69,38 +69,7 @@
     .pulse-delay-2 { animation-delay: 1.2s; }
     @keyframes beamPulse { 0% { left: -30%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
 
-    /* Capability Badges Grid: Fully visible, responsive, no fade or clipping */
-    .capabilities-badges-grid {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      justify-content: center !important;
-      align-items: center !important;
-      gap: 8px !important;
-      margin-top: 26px !important;
-      max-width: 680px !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
-    }
-    .capability-pill {
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 6px !important;
-      padding: 6px 13px !important;
-      border-radius: 99px !important;
-      background: rgba(22, 27, 34, 0.95) !important;
-      border: 1px solid #30363d !important;
-      font-size: 11px !important;
-      font-weight: 600 !important;
-      color: #c9d1d9 !important;
-      white-space: nowrap !important;
-      transition: all 0.2s ease !important;
-    }
-    .capability-pill:hover {
-      background: #21262d !important;
-      border-color: rgba(88, 166, 255, 0.45) !important;
-      color: #fff !important;
-      transform: translateY(-2px) !important;
-    }
+
 
     /* Magic UI: Confetti Canvas */
     .confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
@@ -358,17 +327,6 @@
               </div>
             </div>
 
-            <!-- Capability Highlights: Clean, fully visible, responsive grid -->
-            <div class="capabilities-badges-grid" aria-label="PR-Doc Inspection Capabilities">
-              <span class="capability-pill">🐍 Python AST Parser</span>
-              <span class="capability-pill">🛡️ Bandit Security Scanner</span>
-              <span class="capability-pill">⚡ Cyclomatic Complexity</span>
-              <span class="capability-pill">🔑 Secret &amp; Key Leaks</span>
-              <span class="capability-pill">🔀 Git Patch Parser</span>
-              <span class="capability-pill">🧠 AI Explanation Layer</span>
-              <span class="capability-pill">📊 OWASP Top 10 Rules</span>
-              <span class="capability-pill">🚦 Automated Merge Gate</span>
-            </div>
           </div>
         </section>
 
