@@ -327,20 +327,20 @@ body {
   background: var(--bg-tertiary);
 }
 
-/* Magic UI Team Popover Card */
+/* Compact Team Popover Card */
 .team-interactive-popover {
   position: absolute;
-  bottom: calc(100% + 12px);
+  bottom: calc(100% + 10px);
   left: 0;
-  width: 280px;
+  width: 200px;
   background: #161b22;
   border: 1px solid var(--border-card);
-  border-radius: 10px;
-  box-shadow: 0 16px 36px rgba(1, 4, 9, 0.8), 0 0 0 1px rgba(240, 246, 252, 0.06);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(1, 4, 9, 0.75), 0 0 0 1px rgba(240, 246, 252, 0.08);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px);
-  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
   z-index: 60;
   pointer-events: none;
   overflow: hidden;
@@ -355,124 +355,44 @@ body {
   pointer-events: auto;
 }
 
-.popover-accent-line {
-  height: 3px;
-  background: linear-gradient(90deg, var(--gh-blue), var(--safe-emerald));
-}
-
 .popover-inner {
-  padding: 14px;
+  padding: 10px 12px;
 }
 
-.popover-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
+.popover-header-simple {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.popover-academic-pill {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--safe-emerald);
-  background: rgba(35, 134, 54, 0.15);
-  border: 1px solid rgba(46, 160, 67, 0.3);
-  padding: 1px 7px;
-  border-radius: 99px;
-}
-
-.popover-dept-text {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.popover-project-name {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-white);
-  margin-bottom: 12px;
-}
-
-.team-member-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.member-mini-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  background: rgba(13, 17, 23, 0.6);
-  border: 1px solid transparent;
-  transition: all 0.15s ease;
-}
-
-.member-mini-card:hover,
-.member-mini-card.active {
-  background: var(--bg-tertiary);
-  border-color: rgba(88, 166, 255, 0.3);
-}
-
-.member-avatar-pill {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #21262d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.popover-dept-title {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  color: #c9d1d9;
-  flex-shrink: 0;
+  color: var(--gh-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.member-avatar-pill.lead {
-  background: rgba(56, 139, 253, 0.2);
-  color: #58a6ff;
-  border: 1px solid rgba(88, 166, 255, 0.4);
-}
-
-.member-meta {
+.team-names-list {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  gap: 3px;
 }
 
-.member-real-name {
+.team-name-item {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-white);
-  line-height: 1.2;
+  color: var(--text-primary);
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
 }
 
-.member-role-title {
-  font-size: 10px;
-  color: var(--text-muted);
-  line-height: 1.2;
-  margin-top: 1px;
-}
-
-.popover-institution-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-top: 8px;
-  border-top: 1px solid var(--border-subtle);
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.inst-name {
-  color: var(--text-secondary);
+.team-name-item:hover,
+.team-name-item.highlight {
+  background: var(--bg-tertiary);
+  color: #fff;
 }
 
 /* ==========================================================================

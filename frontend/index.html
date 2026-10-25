@@ -93,6 +93,26 @@
 
     /* Magic UI: Confetti Canvas */
     .confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
+
+    /* Compact Team Popover Card */
+    .team-interactive-popover {
+      position: absolute !important; bottom: calc(100% + 10px) !important; left: 0 !important;
+      width: 200px !important; background: #161b22 !important; border: 1px solid #30363d !important;
+      border-radius: 8px !important; box-shadow: 0 12px 28px rgba(1, 4, 9, 0.75), 0 0 0 1px rgba(240, 246, 252, 0.08) !important;
+      opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+      z-index: 60 !important; pointer-events: none; overflow: hidden;
+    }
+    .avatar-circles-widget:hover .team-interactive-popover,
+    .avatar-circles-widget:focus-within .team-interactive-popover,
+    .team-interactive-popover.open {
+      opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important;
+    }
+    .popover-inner { padding: 10px 12px !important; }
+    .popover-header-simple { margin-bottom: 8px !important; padding-bottom: 6px !important; border-bottom: 1px solid #21262d !important; }
+    .popover-dept-title { font-family: ui-monospace, SFMono-Regular, monospace !important; font-size: 10px !important; font-weight: 700 !important; color: #58a6ff !important; text-transform: uppercase; letter-spacing: 0.5px; }
+    .team-names-list { display: flex !important; flex-direction: column !important; gap: 3px !important; }
+    .team-name-item { font-size: 12px !important; font-weight: 600 !important; color: #e6edf3 !important; padding: 4px 6px !important; border-radius: 4px !important; transition: all 0.15s ease !important; }
+    .team-name-item:hover, .team-name-item.highlight { background: #21262d !important; color: #fff !important; }
   </style>
 </head>
 <body class="dark-theme">
@@ -148,65 +168,41 @@
         </a>
       </nav>
 
-      <!-- Magic UI Style Interactive Avatar Circles (Project Team) -->
+      <!-- Interactive Team Widget -->
       <div class="sidebar-footer">
         <div class="avatar-circles-widget" id="teamWidget" tabindex="0" role="button" aria-haspopup="dialog" aria-label="View Project Team Details">
           <div class="widget-kicker-row">
             <span class="widget-kicker">PROJECT TEAM</span>
-            <span class="widget-dept-tag">CSE</span>
+            <span class="widget-dept-tag">AI&amp;DS</span>
           </div>
 
-          <!-- Overlapping Magic UI Avatar Circles -->
+          <!-- Overlapping Avatar Circles for All 4 Members -->
           <div class="avatar-circles-row">
-            <div class="avatar-circle-item" data-member-idx="0" title="Mano Shruthi S (Lead Developer)">
+            <div class="avatar-circle-item" data-member-idx="0" title="Mano Shruthi S">
               <span class="avatar-avatar-badge lead">MS</span>
             </div>
-            <div class="avatar-circle-item" data-member-idx="1" title="Team Contributor 1 (Static AST &amp; Scanners)">
-              <span class="avatar-avatar-badge">T1</span>
+            <div class="avatar-circle-item" data-member-idx="1" title="Pratigsaa S">
+              <span class="avatar-avatar-badge">PS</span>
             </div>
-            <div class="avatar-circle-item" data-member-idx="2" title="Team Contributor 2 (AI Risk Engine)">
-              <span class="avatar-avatar-badge">T2</span>
+            <div class="avatar-circle-item" data-member-idx="2" title="Safrina S">
+              <span class="avatar-avatar-badge">SS</span>
             </div>
-            <div class="avatar-circle-item avatar-plus-count" data-member-idx="all" title="Avinashilingam Institute — Final Year CSE">
-              <span class="plus-count-text">+3</span>
+            <div class="avatar-circle-item" data-member-idx="3" title="Srivarshini V">
+              <span class="avatar-avatar-badge">SV</span>
             </div>
           </div>
 
-          <!-- Interactive Popover Card -->
+          <!-- Compact Names Popover Card -->
           <div class="team-interactive-popover" id="teamPopover">
-            <div class="popover-accent-line"></div>
             <div class="popover-inner">
-              <div class="popover-title-row">
-                <span class="popover-academic-pill">Final Year Project 2026</span>
-                <span class="popover-dept-text">CSE Dept</span>
+              <div class="popover-header-simple">
+                <span class="popover-dept-title">Department of AI &amp; DS</span>
               </div>
-              <h5 class="popover-project-name">PR-Doc Development Team</h5>
-              <div class="team-member-cards">
-                <div class="member-mini-card active" data-card-idx="0">
-                  <div class="member-avatar-pill lead">MS</div>
-                  <div class="member-meta">
-                    <span class="member-real-name">Mano Shruthi S</span>
-                    <span class="member-role-title">Full-Stack &amp; GitHub Integration</span>
-                  </div>
-                </div>
-                <div class="member-mini-card" data-card-idx="1">
-                  <div class="member-avatar-pill">T1</div>
-                  <div class="member-meta">
-                    <span class="member-real-name">Team Contributor 1</span>
-                    <span class="member-role-title">Static AST &amp; Security Scanners</span>
-                  </div>
-                </div>
-                <div class="member-mini-card" data-card-idx="2">
-                  <div class="member-avatar-pill">T2</div>
-                  <div class="member-meta">
-                    <span class="member-real-name">Team Contributor 2</span>
-                    <span class="member-role-title">AI Explanations &amp; Risk Scorer</span>
-                  </div>
-                </div>
-              </div>
-              <div class="popover-institution-row">
-                <span class="inst-icon">🏛️</span>
-                <span class="inst-name">Avinashilingam Institute</span>
+              <div class="team-names-list">
+                <div class="team-name-item" data-item-idx="0">Mano Shruthi S</div>
+                <div class="team-name-item" data-item-idx="1">Pratigsaa S</div>
+                <div class="team-name-item" data-item-idx="2">Safrina S</div>
+                <div class="team-name-item" data-item-idx="3">Srivarshini V</div>
               </div>
             </div>
           </div>

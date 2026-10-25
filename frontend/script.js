@@ -586,17 +586,13 @@ document.addEventListener('DOMContentLoaded', () => {
     $$('.avatar-circle-item').forEach(circle => {
       circle.addEventListener('mouseenter', () => {
         const idx = circle.dataset.memberIdx;
-        $$('.member-mini-card').forEach(card => {
-          if (idx === 'all' || card.dataset.cardIdx === idx) {
-            card.classList.add('active');
-          } else {
-            card.classList.remove('active');
-          }
+        $$('.team-name-item').forEach(item => {
+          item.classList.toggle('highlight', item.dataset.itemIdx === idx);
         });
       });
       circle.addEventListener('mouseleave', () => {
-        $$('.member-mini-card').forEach((card, i) => {
-          card.classList.toggle('active', i === 0);
+        $$('.team-name-item').forEach(item => {
+          item.classList.remove('highlight');
         });
       });
     });
